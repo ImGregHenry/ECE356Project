@@ -1,0 +1,94 @@
+CREATE TABLE Doctor (
+	DoctorID VARCHAR(100) NOT NULL PRIMARY KEY,
+	FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	Specialty VARCHAR(100),
+	Revenue INT NOT NULL
+);
+
+INSERT INTO Doctor (DoctorID, FirstName, LastName, Specialty, Revenue)
+VALUES ('1', 'Greg', 'Henry', 'Brain Surgery', 1000000),
+       ('2', 'Doctor', 'Who', 'Television', 100000),
+       ('3', 'Doctor', 'Kevorkian', 'Mass Murder', 200000);
+
+
+CREATE TABLE Staff 
+(
+    StaffID VARCHAR(100) NOT NULL PRIMARY KEY,
+	FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	JobTitle VARCHAR(100)
+);
+
+INSERT INTO Staff (StaffID, FirstName, LastName, JobTitle)
+VALUES ('1', 'Bob', 'Loblaw', 'Accountant'),
+       ('2', 'Vincent', 'Chau', 'Janitor'),
+       ('3', 'JohnJacob', 'JingleHeimerSchmidt', 'Secretary'),
+       ('4', 'Lionel', 'Hutz', 'Lawyer');
+
+
+
+CREATE TABLE Patient (
+	PatientNumber INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	NumberOfVisits INT NOT NULL,
+	SocialInsuranceNumber VARCHAR(50),
+	FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	HealthCardNumber VARCHAR(25),
+	Address VARCHAR(200),
+	CurrentStatus VARCHAR(255),
+	LastVisitDate DATETIME
+);
+
+INSERT INTO Patient (PatientNumber, NumberOfVisits, SocialInsuranceNumber, FirstName, LastName, 
+                   HealthCardNumber, Address, CurrentStatus, LastVisitDate)
+VALUES ('1', '5', '123456789', 'Patient', 'Zero', '19191919191919', '123 Fake Street', 'Alive', '2014-11-04'),
+ ('2', '1', '987654321', 'Dumb', 'Dumber', '9191919191919191', '321 Main Street', 'InABetterPlace', '2014-11-04');
+
+
+
+CREATE TABLE Medical (
+	ProcedureName VARCHAR(100) NOT NULL,
+	ProcedureFee INT NOT NULL,
+	Prescription VARCHAR(100),
+	PrescriptionLegality VARCHAR(255),
+    PRIMARY KEY (ProcedureName)
+);
+
+
+CREATE TABLE StaffDoctorAccess (
+	StaffID VARCHAR(100) NOT NULL,
+	DoctorID VARCHAR(100) NOT NULL,
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctor (DoctorID)
+);
+
+CREATE TABLE Appointment (
+	DoctorID VARCHAR(100) NOT NULL PRIMARY KEY,
+	StaffID VARCHAR(100) NOT NULL,
+	PatientNumber INT NOT NULL AUTO_INCREMENT,
+	AppointmentDate DATE NOT NULL,
+	FOREIGN KEY (DoctorID) REFERENCES StaffDoctorAccess (DoctorID), 
+	FOREIGN KEY (StaffID) REFERENCES StaffDoctorAccess (DoctorID),
+	FOREIGN KEY (PatientNumber) REFERENCES Patient (PatientNumber)
+);
+
+
+
+
+CREATE TABLE VisitationRecord (
+    PatientNumber INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    DoctorID VARCHAR(100) NOT NULL,
+    VisitationDate DATETIME NOT NULL,
+    LengthOfVisit TIME NOT NULL,
+    DoctorComment VARCHAR(100),
+    VisitReason VARCHAR(100) NOT NULL,
+    ProcedureFee INT NOT NULL,  
+    ProcedureName VARCHAR(100) NOT NULL,
+    
+    FOREIGN KEY (PatientNumber) REFERENCES Patient (PatientNumber),
+    FOREIGN KEY (DoctorID) REFERENCES Doctor (DoctorID),
+    FOREIGN KEY (ProcedureName) REFERENCES Medical (ProcedureName)
+);
+
+
