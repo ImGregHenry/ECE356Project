@@ -1,0 +1,31 @@
+Install Eclipse first...
+
+MySQL Install
+(use this): http://dev.mysql.com/downloads/installer/
+(not this): http://dev.mysql.com/downloads/file.php?id=454044
+--> Once installed, use MySQL WorkBench to setup database.
+--> Create a database in MySQL WorkBench named: "356project" with password: "password".
+--> Run script named "CreateTablesAndData".
+--> Database setup complete.
+
+MySQL Connector for Eclipse
+(use this) JAR: http://dev.mysql.com/downloads/connector/j/5.0.html
+(not this) MSI: http://dev.mysql.com/downloads/connector/j/
+--> Open Eclipse project.  
+--> Right click on the project in "Package Explorer" tab and go "Properties".  
+--> Select "Java Build Path" and then the "Libraries Tab".  
+--> Select "Add External JARs...".  Select the jar file at the link above.
+--> Use the dbQuery.java file for database queries.  Some samples are included already.
+
+Install Swing for Eclipse
+--> In Eclipse, go "Help" --> "Install New Software..."
+--> In the "Work with" box, enter the sites on at a time and click "Add..."
+(THIS ONE!)http://dl.google.com/eclipse/inst/d2wbpro/latest/4.2Swing
+(nope, not this)http://download.eclipse.org/releases/kepler
+(nope, not this either)http://download.eclipse.org/releases/juno
+
+Creating a new "Application Window"
+--> "File" > "New" > "Other".
+--> "Window Builder" > "Swing Designer" > "Application Window".  Give it a name and click "Finish".
+--> To design the GUI, go to the "Design" Tab at the bottom left hand corner of the window when the .java file that you just created is open.  
+Note: for simpler GUI's, use "Absolute Layout".
