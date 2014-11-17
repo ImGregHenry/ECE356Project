@@ -45,7 +45,7 @@ public class MainTabPage {
 	private void initialize() {
 		frmProject = new JFrame();
 		frmProject.setTitle("356 Project");
-		frmProject.setBounds(100, 100, 775, 532);
+		frmProject.setBounds(50, 50, 775, 532);
 		frmProject.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmProject.getContentPane().setLayout(null);
 		frmProject.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
@@ -82,7 +82,7 @@ public class MainTabPage {
 		}
 		tabbedPane.addTab("Create Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.CREATE, -1));
 		tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, 1));
-		tabbedPane.addTab("Appointments", new AppointmentPanel(loginUser.StaffID));
+		tabbedPane.addTab("Appointments", new AppointmentPanel("1")); //loginUser.StaffID
 		tabbedPane.addTab("VisitationRecord", new VisitationRecordPanel(1));
 
 		

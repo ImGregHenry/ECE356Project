@@ -11,8 +11,8 @@ public class dbQuery {
 
 	private static Connection conn = null;
 	private static Statement stmt = null;
-	private static SimpleDateFormat dbDateFormat = new SimpleDateFormat(
-			"YYYY-MM-dd HH:MM:SS");
+	public static SimpleDateFormat dbDateFormat = new SimpleDateFormat(
+			"YYYY-MM-dd HH:mm:SS");
 
 	public static void StartDBConnection() {
 		try {
@@ -194,7 +194,7 @@ public class dbQuery {
 																			// appt
 				+ "AND '" + startDateString + "' <= a.AppointmentDate))";
 
-		// System.out.println("Query: " + query);
+		System.out.println("TestAppt QUERY: " + query);
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
@@ -209,7 +209,8 @@ public class dbQuery {
 	}
 
 	public static void Staff_ScheduleDoctorAppointment(String length,
-			String staffID, String patientID, String doctorID, Date apptDate) {
+			String staffID, String patientID, String doctorID, String startDateString) {
+		
 		String query = "INSERT INTO Appointment (DoctorID, StaffID, PatientID, AppointmentDate, AppointmentLength) "
 				+ "VALUES  ("
 				+ doctorID
@@ -218,11 +219,13 @@ public class dbQuery {
 				+ "', '"
 				+ patientID
 				+ "', '"
-				+ dbDateFormat.format(apptDate)
+				+ startDateString
 				+ "', '"
 				+ length
 				+ "')";
 
+		System.out.println("ScheduleAppt QUERY: " + query);
+		
 		ExecuteDatabaseQuery(query);
 	}
 
@@ -230,11 +233,13 @@ public class dbQuery {
 			String doctorID) {
 		String query = "SELECT CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName, "
 				+ "CONCAT(p.FirstName, ' ', p.LastName) AS PatientName,  "
-				+ "CONCAT(s.FirstName, ' ', s.LastName) AS StaffName, a.AppointmentDate, a.AppointmentLength, a.DoctorID, a.AppointmentID "
+				+ "CONCAT(s.FirstName, ' ', s.LastName) AS StaffName, a.AppointmentDate, a.AppointmentLength, a.DoctorID, a.AppointmentID, "
+				+ "IF (v.AppointmentID IS NULL,'true','false') as CanDelete "
 				+ "FROM Appointment a "
 				+ "INNER JOIN Doctor d ON d.DoctorID = a.DoctorID "
 				+ "INNER JOIN Staff s ON s.StaffID = a.StaffID "
 				+ "INNER JOIN Patient p ON p.PatientID = a.PatientID "
+				+ "LEFT JOIN VisitationRecord v ON v.AppointmentID = a.AppointmentID "
 				+ "WHERE a.AppointmentDate > current_date() ";
 
 		// Don't filter if "ALL" is selected
@@ -262,7 +267,7 @@ public class dbQuery {
 	}
 
 	public static void Staff_DeleteScheduledAppointment(String apptID) {
-		String query = "DELETE FROM Appointment a WHERE a.AppointmentID = " + apptID + "'";
+		String query = "DELETE FROM Appointment WHERE AppointmentID = " + apptID;
 
 		System.out.println("Query: " + query);
 		dbQuery.ExecuteDatabaseQuery(query);
