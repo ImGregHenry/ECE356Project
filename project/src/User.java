@@ -10,6 +10,7 @@ public class User {
 	
 	public User(String docID, String staffID, String patientID, Login.LoginAccessLevel access)
 	{
+		//test
 		this.DoctorID = docID;
 		
 		if(patientID != null)

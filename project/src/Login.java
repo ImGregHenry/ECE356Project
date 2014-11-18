@@ -20,15 +20,9 @@ import javax.swing.SwingConstants;
 
 public class Login {
 
+
 	private boolean IsAutoLogin = true;
-	private LoginAccessLevel autoLoginAccessLevel = LoginAccessLevel.DOCTOR;
-	private static String autologinDoctorID = "1";
-	private static String autologinPatientID;
-	private static String autologinStaffID;
-	
-	private static User loginUser;
-	
-	public static enum LoginAccessLevel {
+	public enum LoginAccessLevel {
 		NONE,
 		PATIENT,
 		DOCTOR,
@@ -37,6 +31,14 @@ public class Login {
 		STAFF,
 		ADMIN
 	}
+	private LoginAccessLevel autoLoginAccessLevel = LoginAccessLevel.DOCTOR;
+	private static String autologinDoctorID = "1";
+	private static String autologinPatientID;
+	private static String autologinStaffID;
+	
+	private static User loginUser;
+	
+
 	private JFrame frame;
 	private JTextField txt_LoginName;
 	private JPasswordField txt_Password;
@@ -84,7 +86,7 @@ public class Login {
 		frame.setBounds(100, 100, 587, 379);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		frame.setTitle("356 Project");
+		frame.setTitle("356 Project");http://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprise
 		
 		txt_LoginName = new JTextField();
 		txt_LoginName.setText("doctor");

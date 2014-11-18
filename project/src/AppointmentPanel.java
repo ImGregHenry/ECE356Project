@@ -213,7 +213,6 @@ public class AppointmentPanel extends JPanel {
 		table_Appointments.removeColumn(table_Appointments.getColumnModel().getColumn(TABLE_APPOINTMENT_ID_COLUMN_INDEX));
 		
 		table_Appointments.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				
 				// Prevent this event from firing twice
@@ -334,8 +333,8 @@ public class AppointmentPanel extends JPanel {
 				
 				String startDateString = sdfDate.format(calendar_Appt.getDate());
 				String startTimeString = sdfTime.format(spinner_Time.getValue()) + ":00";
-				int apptLength = (int) spinner_Length.getValue();
-					
+				//int apptLength = (int) spinner_Length.getValue();
+				int apptLength = 1;	
 				try {
 					// Calculate start date of appt by merging the date and time
 					String combinedDateTimeString = startDateString + " " + startTimeString; 
