@@ -26,7 +26,6 @@ import javax.swing.JSpinner;
 import java.awt.Font;
 import javax.swing.JButton;
 
-import com.sun.corba.se.impl.encoding.CodeSetConversion.BTCConverter;
 import com.toedter.calendar.JCalendar;
 import javax.swing.ListSelectionModel;
 

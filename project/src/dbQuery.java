@@ -281,4 +281,58 @@ public class dbQuery {
 
 		return rs;
 	}
+	
+	public static ResultSet Staff_GetPatientDoctorAssignments()
+	{
+		String query = "SELECT sda.AssignedToDoctorID, sda.PatientID, CONCAT(p.FirstName, ' ', p.LastName) AS PatientName, "
+		+ "CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName "
+		+ "FROM staffdoctoraccess sda "
+		+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
+		+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
+		+ "ORDER BY PatientName";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	public static void Staff_DeletePatientToDoctorAssignment(String patientID, String doctorID)
+	{
+		String query = "DELETE FROM StaffDoctorAccess "
+			 	+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
+			 	+ "AND PatientID = '" + patientID + "'";
+		
+		System.out.println("DeletePatient/Doc Assignment QUERY: " + query);
+		dbQuery.ExecuteDatabaseQuery(query);
+	}
+	
+	public static ResultSet Staff_AssignPatientToDoctor(String patientID, String doctorID)
+	{
+		String query = "INSERT INTO StaffDoctorAccess(AssignedToDoctorID, PatientID) "
+		 	+ "VALUES ('" + doctorID + "', '" + patientID + "')";
+
+		dbQuery.ExecuteDatabaseQuery(query);
+		
+		return null;
+	}
+	
+	public static boolean Staff_CanAssignPatientToDoctor(String patientID, String doctorID)
+	{
+		// Check for duplicate entries
+		String query = "SELECT PatientID, AssignedToDoctorID "
+				+ "FROM StaffDoctorAccess "
+				+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
+				+ " AND PatientID = '" + patientID + "'";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		// If any entries exist with these parameters, conflicts found.
+		if (dbQuery.GetResultSetLength(rs) > 0) {
+			return false;
+		}
+		// No conflicting assignments found.
+		else {
+			return true;	
+		}
+	}
 }

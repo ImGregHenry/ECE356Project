@@ -3,7 +3,7 @@
 public class User {
 
 	public String DoctorID;
-	public int PatientID;
+	public String PatientID;
 	public String StaffID;
 	
 	public Login.LoginAccessLevel accessLevel;
@@ -12,11 +12,7 @@ public class User {
 	{
 		//test
 		this.DoctorID = docID;
-		
-		if(patientID != null)
-			this.PatientID = Integer.parseInt(patientID);
-		
-		
+		this.PatientID = patientID;
 		this.StaffID = staffID;
 		
 		this.accessLevel = access;

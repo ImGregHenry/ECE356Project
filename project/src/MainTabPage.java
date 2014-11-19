@@ -80,6 +80,7 @@ public class MainTabPage {
 		{
 			
 		}
+		tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor("1"));
 		tabbedPane.addTab("Create Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.CREATE, -1));
 		tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, 1));
 		tabbedPane.addTab("Appointments", new AppointmentPanel("1")); //loginUser.StaffID

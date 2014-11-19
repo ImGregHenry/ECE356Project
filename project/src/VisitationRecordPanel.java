@@ -1,10 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -15,33 +14,16 @@ import javax.swing.table.DefaultTableModel;
 
 public class VisitationRecordPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table_VisitationRecord;
 	
-	
-	
-	
-//
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					VisitationRecordPanel frame = new VisitationRecordPanel();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
 	/**
-	 * Create the frame.
+	 * Create the panel.
 	 */
-	
 	public VisitationRecordPanel(int patientID) 
 	{
 		Initialize();
