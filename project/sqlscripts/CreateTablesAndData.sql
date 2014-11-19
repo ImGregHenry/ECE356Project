@@ -33,7 +33,7 @@ VALUES ('1', 'Bob', 'Loblaw', 'Accountant'),
 
 
 CREATE TABLE Patient (
-	PatientID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	PatientID VARCHAR(100)  NOT NULL PRIMARY KEY,
 	NumberOfVisits INT NOT NULL,
 	SocialInsuranceNumber VARCHAR(50),
 	FirstName VARCHAR(100),
@@ -71,7 +71,7 @@ CREATE TABLE LoginInfo (
     Pass VARCHAR(50),
     AccessLevel VARCHAR(50) NOT NULL,
     StaffID VARCHAR(100),
-	PatientID INT,
+	PatientID VARCHAR(100),
     DoctorID VARCHAR(100),
     PRIMARY KEY (LoginName),
     FOREIGN KEY (AccessLevel) REFERENCES AccessLevels(AccessName),
@@ -85,7 +85,7 @@ VALUES ('doctor', 'pass', NULL, NULL, '1','DOCTOR'),
 ('staff', 'pass', '2', NULL, NULL, 'STAFF'),
 ('legal', 'pass', '4', NULL, NULL,'LEGAL'),
 ('admin', 'pass', NULL, NULL, '1', 'ADMIN'),
-('patient', 'pass', NULL, 3, NULL, 'PATIENT');
+('patient', 'pass', NULL, '3', NULL, 'PATIENT');
 
 
 CREATE TABLE Medical (
@@ -103,13 +103,19 @@ VALUES  ('Consultation', '100', 'Rest', 'legal'),
 
 
 CREATE TABLE StaffDoctorAccess (
-	StaffID VARCHAR(100) NOT NULL,
-	DoctorID VARCHAR(100) NOT NULL,
+	DoctorIDSharingPatient VARCHAR(100),
+    StaffID VARCHAR(100),
+    PatientID VARCHAR(100),
+    AssignedToDoctorID VARCHAR(100) NOT NULL,
+    
+    FOREIGN KEY (PatientID) REFERENCES Patient (PatientID),
+    FOREIGN KEY (DoctorIDSharingPatient) REFERENCES Doctor (DoctorID),
     FOREIGN KEY (StaffID) REFERENCES Staff (StaffID),
-    FOREIGN KEY (DoctorID) REFERENCES Doctor (DoctorID)
+    FOREIGN KEY (AssignedToDoctorID) REFERENCES Doctor (DoctorID)
 );
 
-INSERT INTO StaffDoctorAccess(DoctorID, StaffID)
+-- Assign Staff to Doctor
+INSERT INTO StaffDoctorAccess(AssignedToDoctorID, StaffID)
 VALUES  ('2', '3'),
 ('1', '1'),
 ('2', '1'),
@@ -120,17 +126,24 @@ VALUES  ('2', '3'),
 ('1', '4'),
 ('2', '2');
 
+-- Assign Patients to Doctor
+INSERT INTO StaffDoctorAccess(AssignedToDoctorID, PatientID)
+VALUES  ('1', '1'),
+('2', '2'),
+('3', '3'),
+('1', '3'),
+('1', '2');
 
 CREATE TABLE Appointment (
 	AppointmentID int NOT NULL AUTO_INCREMENT,
     DoctorID VARCHAR(100) NOT NULL,
 	StaffID VARCHAR(100) NOT NULL,
-	PatientID INT NOT NULL,
+	PatientID VARCHAR(100) NOT NULL,
 	AppointmentDate DATETIME NOT NULL,
     AppointmentLength TIME NOT NULL,
     PRIMARY KEY (AppointmentID),
-	FOREIGN KEY (DoctorID) REFERENCES StaffDoctorAccess (DoctorID), 
-	FOREIGN KEY (StaffID) REFERENCES StaffDoctorAccess (StaffID),
+	FOREIGN KEY (DoctorID) REFERENCES Doctor (DoctorID), 
+	FOREIGN KEY (StaffID) REFERENCES Staff (StaffID),
 	FOREIGN KEY (PatientID) REFERENCES Patient (PatientID)
 );
 

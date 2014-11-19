@@ -10,11 +10,6 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JTable;
-import javax.swing.table.*;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.JScrollPane;
 
 public class PatientInfoPanel extends JPanel {
 
@@ -236,8 +231,5 @@ public class PatientInfoPanel extends JPanel {
 		lbl_UpdateMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_UpdateMessage.setBounds(160, 348, 123, 14);
 		this.add(lbl_UpdateMessage);
-
-		// frame.setVisible(true);
-
 	}
 }
