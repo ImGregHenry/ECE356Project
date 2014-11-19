@@ -14,6 +14,10 @@ public class dbQuery {
 	public static SimpleDateFormat dbDateFormat = new SimpleDateFormat(
 			"YYYY-MM-dd HH:mm:SS");
 
+
+	// **************************
+	// GENERIC QUERIES
+	// **************************
 	public static void StartDBConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -92,15 +96,33 @@ public class dbQuery {
 		return 0;
 	}
 
-	public static ResultSet Login_GetLoginInformation(String user, String pass) {
-		String query = "SELECT * FROM LoginInfo WHERE LoginName = '" + user
-				+ "' AND Pass = '" + pass + "'";
 
+	// **************************
+	// Login.java
+	// **************************
+	public static ResultSet Login_GetLoginInformation(String user, String pass) {
+		String query = "SELECT i.LoginName, i.Pass, i.AccessLevel, i.DoctorID, i.StaffID, i.PatientID, "
+				+ "p.FirstName AS PatientFirstName, p.LastName AS PatientLastName, "
+				+ "d.FirstName AS DoctorFirstName, d.LastName AS DoctorLastName, "
+				+ "s.FirstName AS StaffFirstName, s.LastName AS StaffLastName "
+				+ "FROM LoginInfo i "
+				+ "LEFT JOIN Patient p ON p.PatientID = i.PatientID "
+				+ "LEFT JOIN Doctor d ON d.DoctorID = i.DoctorID "
+				+ "LEFT JOIN Staff s ON s.StaffID = i.StaffID "
+				+ "WHERE LoginName = '" + user + "' " 
+				+ "AND Pass = '" + pass + "'";
+		
+		System.out.println("Get Login Info QUERY: " + query);
+		
 		ResultSet rs = dbQuery.GetResultSet(query);
 
 		return rs;
 	}
 
+
+	// **************************
+	// PatientPanel.java
+	// **************************
 	public static ResultSet Patient_GetPatientVisitationRecord(int patientID) {
 		String query = "SELECT a.PatientID, d.LastName AS DoctorName, a.AppointmentDate, a.AppointmentLength, VisitReason, ProcedureFee, ProcedureName"
 				+ " FROM VisitationRecord v"
@@ -128,7 +150,7 @@ public class dbQuery {
 		String query = "INSERT INTO Patient (SocialInsuranceNumber, FirstName, LastName, HealthCardNumber, Address, PhoneNumber, CurrentStatus)";
 		query += " VALUES ('" + sin + "', " + firstName + "', " + lastName + "', " + healthCardNum + "', " + address + "', " + phoneNumber + ", 'Alive')";
 		
-		System.out.println("Create Patient Query: " + query);
+		//System.out.println("Create Patient QUERY: " + query);
 
 		dbQuery.ExecuteDatabaseQuery(query);
 	}
@@ -144,11 +166,15 @@ public class dbQuery {
 				+ " Address = '" + address + "'," + " PhoneNumber = '"
 				+ phoneNumber + "'" + " WHERE PatientID = " + patient;
 
-		System.out.println("Update Patient Query: " + query);
+		//System.out.println("Update Patient Query: " + query);
 
 		dbQuery.ExecuteDatabaseQuery(query);
 	}
-
+	
+	
+	// **************************
+	// AppointmentPanel.java
+	// **************************
 	public static boolean Staff_IsAppointmentAvailabile(String doctorID,
 			String patientID, Date start, Date end) {
 		String startDateString = dbDateFormat.format(start);
@@ -194,7 +220,7 @@ public class dbQuery {
 																			// appt
 				+ "AND '" + startDateString + "' <= a.AppointmentDate))";
 
-		System.out.println("TestAppt QUERY: " + query);
+		//System.out.println("TestAppt QUERY: " + query);
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
@@ -224,7 +250,7 @@ public class dbQuery {
 				+ length
 				+ "')";
 
-		System.out.println("ScheduleAppt QUERY: " + query);
+		//System.out.println("ScheduleAppt QUERY: " + query);
 		
 		ExecuteDatabaseQuery(query);
 	}
@@ -249,7 +275,7 @@ public class dbQuery {
 
 		query += "ORDER BY a.AppointmentDate";
 
-		System.out.println("QUERY: " + query);
+		//System.out.println("QUERY: " + query);
 
 		// System.out.println("Query: " + query);
 
@@ -258,13 +284,6 @@ public class dbQuery {
 		return rs;
 	}
 
-	public static ResultSet Staff_GetAllDoctorInfo() {
-		String query = "SELECT * FROM Doctor";
-
-		ResultSet rs = dbQuery.GetResultSet(query);
-
-		return rs;
-	}
 
 	public static void Staff_DeleteScheduledAppointment(String apptID) {
 		String query = "DELETE FROM Appointment WHERE AppointmentID = " + apptID;
@@ -282,14 +301,33 @@ public class dbQuery {
 		return rs;
 	}
 	
-	public static ResultSet Staff_GetPatientDoctorAssignments()
+	public static ResultSet Staff_GetAllStaffInfo() {
+		String query = "SELECT * FROM Staff";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+
+	public static ResultSet Staff_GetAllDoctorInfo() {
+		String query = "SELECT * FROM Doctor";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	// **************************
+	// AssignPatientToDoctor.java
+	// **************************
+	public static ResultSet Staff_GetPatientToDoctorAssignments()
 	{
 		String query = "SELECT sda.AssignedToDoctorID, sda.PatientID, CONCAT(p.FirstName, ' ', p.LastName) AS PatientName, "
 		+ "CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName "
 		+ "FROM staffdoctoraccess sda "
 		+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
 		+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
-		+ "ORDER BY PatientName";
+		+ "ORDER BY DoctorName, PatientName";
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
@@ -300,20 +338,20 @@ public class dbQuery {
 	{
 		String query = "DELETE FROM StaffDoctorAccess "
 			 	+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
-			 	+ "AND PatientID = '" + patientID + "'";
+			 	+ "AND PatientID = '" + patientID + "' " 
+			 	+ "AND DoctorIDSharingPatient IS NULL "
+			 	+ "AND StaffID IS NULL";
 		
 		System.out.println("DeletePatient/Doc Assignment QUERY: " + query);
 		dbQuery.ExecuteDatabaseQuery(query);
 	}
 	
-	public static ResultSet Staff_AssignPatientToDoctor(String patientID, String doctorID)
+	public static void Staff_AssignPatientToDoctor(String patientID, String doctorID)
 	{
 		String query = "INSERT INTO StaffDoctorAccess(AssignedToDoctorID, PatientID) "
 		 	+ "VALUES ('" + doctorID + "', '" + patientID + "')";
 
 		dbQuery.ExecuteDatabaseQuery(query);
-		
-		return null;
 	}
 	
 	public static boolean Staff_CanAssignPatientToDoctor(String patientID, String doctorID)
@@ -322,7 +360,9 @@ public class dbQuery {
 		String query = "SELECT PatientID, AssignedToDoctorID "
 				+ "FROM StaffDoctorAccess "
 				+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
-				+ " AND PatientID = '" + patientID + "'";
+				+ "AND PatientID = '" + patientID + "' " 
+				+ "AND DoctorIDSharingPatient IS NULL "
+				+ "AND StaffID IS NULL";
 		
 		ResultSet rs = dbQuery.GetResultSet(query);
 
@@ -334,5 +374,161 @@ public class dbQuery {
 		else {
 			return true;	
 		}
+	}
+	
+	// **************************
+	// AssignStaffToDoctor.java
+	// **************************
+	public static ResultSet Doctor_GetStaffToDoctorAssignments(String doctorID)
+	{
+		String query = "SELECT sda.AssignedToDoctorID, sda.StaffID, "
+		+ "CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName, "
+		+ "CONCAT(s.FirstName, ' ', s.LastName) AS StaffName "
+		+ "FROM staffdoctoraccess sda "
+		+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
+		+ "INNER JOIN Staff s ON sda.StaffID = s.StaffID " 
+		+ "WHERE sda.AssignedToDoctorID = '" + doctorID + "' "
+		+ "ORDER BY DoctorName, StaffName";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	public static boolean Doctor_CanAssignStaffToDoctor(String doctorID, String staffID)
+	{
+		// Check for duplicate entries
+		String query = "SELECT StaffID, AssignedToDoctorID "
+				+ "FROM StaffDoctorAccess "
+				+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
+				+ "AND staffID = '" + staffID + "' "
+				+ "AND PatientID IS NULL "
+				+ "AND DoctorIDSharingPatient IS NULL";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		// If any entries exist with these parameters, conflicts found.
+		if (dbQuery.GetResultSetLength(rs) > 0) {
+			return false;
+		}
+		// No conflicting assignments found.
+		else {
+			return true;	
+		}
+	}
+	
+	public static void Doctor_AssignStaffToDoctor(String doctorID, String staffID)
+	{
+		String query = "INSERT INTO StaffDoctorAccess(AssignedToDoctorID, StaffID) "
+			 	+ "VALUES ('" + doctorID + "', '" + staffID + "')";
+
+		dbQuery.ExecuteDatabaseQuery(query);
+	}
+	
+	public static void Doctor_DeleteStaffToDoctorAssignment(String doctorID, String staffID)
+	{
+		String query = "DELETE FROM StaffDoctorAccess "
+			 	+ "WHERE AssignedToDoctorID = '" + doctorID + "' "
+			 	+ "AND StaffID = '" + staffID + "' "
+			 	+ "AND DoctorIDSharingPatient IS NULL "
+			 	+ "AND PatientID IS NULL";
+		
+		//System.out.println("Delete Staff/Doc Assignment QUERY: " + query);
+		dbQuery.ExecuteDatabaseQuery(query);
+	
+	}
+	
+	// **************************
+	// DoctorSharePatientWithDoctor.java
+	// **************************
+	public static ResultSet Doctor_GetDoctorToDoctorPatientSharing(String sharingDoctorID)
+	{
+		String query = "SELECT sda.AssignedToDoctorID, sda.PatientID, sda.DoctorIDSharingPatient, "
+		+ "CONCAT(d.FirstName, ' ', d.LastName) AS AssignedDoctorName, "
+		+ "CONCAT(d2.FirstName, ' ', d2.LastName) AS SharingDoctorName, "
+		+ "CONCAT(p.FirstName, ' ', p.LastName) AS PatientName "
+		+ "FROM staffdoctoraccess sda "
+		+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
+		+ "INNER JOIN Doctor d2 ON sda.DoctorIDSharingPatient = d2.DoctorID "
+		+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
+		+ "WHERE sda.DoctorIDSharingPatient = '" + sharingDoctorID + "' "
+		+ "ORDER BY SharingDoctorName, sda.PatientID, AssignedDoctorName";
+
+		System.out.println("Get DocToDoc Patient Sharing QUERY: " + query);
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	public static ResultSet Doctor_GetAllDoctorsAssignedPatients(String doctorID) {
+		String query = "SELECT sda.AssignedToDoctorID, sda.PatientID, sda.DoctorIDSharingPatient, "
+				+ "CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName, "
+				+ "CONCAT(p.FirstName, ' ', p.LastName) AS PatientName "
+				+ "FROM staffdoctoraccess sda "
+				+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
+				+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
+				+ "WHERE sda.AssignedToDoctorID = '" + doctorID + "' "
+				+ "ORDER BY PatientName";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		System.out.println("Get Doc's Assigned Patients QUERY: " + query);
+		
+		return rs;
+	}
+
+	public static void Doctor_DeleteDoctorToDoctorPatientSharing(String doctorIDSharingPatient, String patientID, String doctorIDAssignedTo)
+	{
+		String query = "DELETE FROM StaffDoctorAccess "
+			 	+ "WHERE AssignedToDoctorID = '" + doctorIDAssignedTo + "' "
+			 	+ "AND DoctorIDSharingPatient = '" + doctorIDSharingPatient + "'"
+			 	+ "AND PatientID = '" + patientID + "' "
+				+ "AND PatientID IS NULL";
+		//System.out.println("Delete DocToDoc Patient Sharing QUERY: " + query);
+		
+		dbQuery.ExecuteDatabaseQuery(query);
+	}
+	
+	public static boolean Doctor_CanDoctorToDoctorSharePatient(String docIDSharingPatient, String patID, String docIDAssignedTo)
+	{
+		// Check for duplicate entries
+		String query = "SELECT * "
+				+ "FROM StaffDoctorAccess "
+				+ "WHERE DoctorIDSharingPatient = '" + docIDSharingPatient + "' "
+				+ "AND AssignedToDoctorID = '" + docIDAssignedTo + "' "
+				+ "AND PatientID = '" + patID + "' "
+				+ "AND StaffID IS NULL";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		// If any entries exist with these parameters, conflicts found.
+		if (dbQuery.GetResultSetLength(rs) > 0) {
+			return false;
+		}
+		// No conflicting assignments found.
+		else {
+			return true;	
+		}
+	}
+	
+	public static void Doctor_SharePatientDoctorToDoctor(String docIDSharingPatient, String patID, String docIDAssignedTo)
+	{
+		String query = "INSERT INTO StaffDoctorAccess (DoctorIDSharingPatient, PatientID, AssignedToDoctorID) "
+				+ "VALUES ('" + docIDSharingPatient + "', '" + patID + "', '" + docIDAssignedTo + "')";
+				
+		dbQuery.ExecuteDatabaseQuery(query);
+	}
+	
+	public static ResultSet Staff_GetAllDoctorsExceptDocID(String docID)
+	{
+		String query = "SELECT * "
+				+ "FROM Doctor "
+				+ "WHERE DoctorID <> '" + docID + "'";
+		
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
 	}
 }

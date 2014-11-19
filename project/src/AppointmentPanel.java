@@ -51,14 +51,13 @@ public class AppointmentPanel extends JPanel {
 	private JLabel lbl_BookApptMessage;
 	private JCalendar calendar_Appt;
 	private boolean isDoctorComboBoxLoaded = false;
-	private String staffID;
-
+	private User user;
 
 	/**
 	 * Create the application.
 	 */
-	public AppointmentPanel(String _staffID) {
-		this.staffID = _staffID;
+	public AppointmentPanel(User _user) {
+		this.user = _user;
 		initialize();
 
 		
@@ -70,7 +69,7 @@ public class AppointmentPanel extends JPanel {
 		PopulateAppointmentTable();
 		
 		//TODO: only load doctors that staff can schedule appointments for.
-		System.out.println("APPOINTMENT PANEL LOADED.  StaffID: " + this.staffID);
+		System.out.println("APPOINTMENT PANEL LOADED.  StaffID: " + this.user.StaffID);
 	}
 	
 	private void PopulatePatientDropDown()
@@ -136,7 +135,7 @@ public class AppointmentPanel extends JPanel {
 		ResultSet rs = dbQuery.Staff_GetFutureAppointmentInformation(selectedDoctor.getID());
 		
 		
-		System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
+		//System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
 		
 		Object[] row = new Object[TABLE_COLUMN_COUNT];
 		try {
@@ -156,7 +155,7 @@ public class AppointmentPanel extends JPanel {
 			    ((DefaultTableModel) table_Appointments.getModel()).insertRow(rs.getRow()-1, row);
 			}
 			
-			System.out.println("Successfully loaded doctor appointment table!");
+			//System.out.println("Successfully loaded doctor appointment table!");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("ERROR: loading doctor appointment table!");
@@ -327,8 +326,8 @@ public class AppointmentPanel extends JPanel {
 				
 				CustomComboBoxItem selectedPatient = (CustomComboBoxItem)comboBox_SchedulePatient.getSelectedItem();
 				CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_ScheduleDoctor.getSelectedItem();
-				System.out.println("SelectedPatientID: " + selectedPatient.getID() + " Patient Name: " + selectedPatient.getName());
-				System.out.println("SelectedDoctorID: " + selectedDoctor.getID() + " Doctor Name: " + selectedDoctor.getName());
+				//System.out.println("SelectedPatientID: " + selectedPatient.getID() + " Patient Name: " + selectedPatient.getName());
+				//System.out.println("SelectedDoctorID: " + selectedDoctor.getID() + " Doctor Name: " + selectedDoctor.getName());
 				
 				String startDateString = sdfDate.format(calendar_Appt.getDate());
 				String startTimeString = sdfTime.format(spinner_Time.getValue()) + ":00";
@@ -339,7 +338,7 @@ public class AppointmentPanel extends JPanel {
 					String combinedDateTimeString = startDateString + " " + startTimeString; 
 					startDate = sdfFullDateTime.parse(combinedDateTimeString);
 					
-					System.out.println("CombinedDateTime: " + sdfFullDateTime.format(startDate));
+					//System.out.println("CombinedDateTime: " + sdfFullDateTime.format(startDate));
 					
 					// Calculate end date of appt (based on length of appt)
 					final long ONE_MINUTE_IN_MS=60000; 
@@ -354,10 +353,10 @@ public class AppointmentPanel extends JPanel {
 					
 					if(isApptAvailable)
 					{
-						System.out.println("Appointment is available!  Attempting to schedule.");
+						//System.out.println("Appointment is available!  Attempting to schedule.");
 						
 						
-						dbQuery.Staff_ScheduleDoctorAppointment(CreateTimeStringForApptLength(apptLength), staffID, selectedPatient.getID(), selectedDoctor.getID(), dbQuery.dbDateFormat.format(startDate));
+						dbQuery.Staff_ScheduleDoctorAppointment(CreateTimeStringForApptLength(apptLength), user.StaffID, selectedPatient.getID(), selectedDoctor.getID(), dbQuery.dbDateFormat.format(startDate));
 						
 						// Reload the appointment table
 						PopulateAppointmentTable();
@@ -394,14 +393,14 @@ public class AppointmentPanel extends JPanel {
 		btnCancelAppointment.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				System.out.println("CANDELETE: " + table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"));
+				//System.out.println("CANDELETE: " + table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"));
 				//TODO: test whether can-delete column works.
 				if(table_Appointments.getSelectedRow() != -1
 						&& table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"))
 				{
 					Object appointmentID = table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_APPOINTMENT_ID_COLUMN_INDEX);
 	
-					System.out.println("DELETING appoint for PatientID: " + appointmentID + " Row: " + table_Appointments.getSelectedRow() + " Col: " + TABLE_APPOINTMENT_ID_COLUMN_INDEX);
+					//System.out.println("DELETING appoint for PatientID: " + appointmentID + " Row: " + table_Appointments.getSelectedRow() + " Col: " + TABLE_APPOINTMENT_ID_COLUMN_INDEX);
 					dbQuery.Staff_DeleteScheduledAppointment(appointmentID.toString());
 					//TODO: handle deleting appointments when they have a visitation record (don't delete)
 					

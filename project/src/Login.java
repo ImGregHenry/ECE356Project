@@ -12,8 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 
@@ -22,6 +20,13 @@ public class Login {
 
 
 	private boolean IsAutoLogin = true;
+	
+//	private boolean IsAutoLogin = true;
+//	private LoginAccessLevel autoLoginAccessLevel = LoginAccessLevel.DOCTOR;
+//	private static String autologinDoctorID = "1";
+//	private static String autologinPatientID;
+//	private static String autologinStaffID;
+	
 	public enum LoginAccessLevel {
 		NONE,
 		PATIENT,
@@ -77,19 +82,13 @@ public class Login {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				//dbQuery.CloseDBConnection();
-			}
-		});
 		frame.setBounds(100, 100, 587, 379);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setTitle("356 Project");http://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprise
 		
 		txt_LoginName = new JTextField();
-		txt_LoginName.setText("doctor");
+		txt_LoginName.setText("admin");
 		txt_LoginName.setBounds(181, 120, 201, 20);
 		frame.getContentPane().add(txt_LoginName);
 		txt_LoginName.setColumns(10);
@@ -108,7 +107,6 @@ public class Login {
 		lbl_ErrorMessage.setBounds(191, 192, 180, 14);
 		frame.getContentPane().add(lbl_ErrorMessage);
 		
-
 		btn_Login = new JButton("Login");
 		btn_Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -118,18 +116,8 @@ public class Login {
 				{
 					lbl_ErrorMessage.setText("SUCCESS: Logging In...");
 					
-					// Debugging auto login flag
-//					if(IsAutoLogin)
-//					{
-//						new MainTabPage(autoLoginAccessLevel, autologinDoctorID, autologinPatientID, autologinStaffID);
-//						frame.dispose();
-//					}
-//					else
-//					{
-						new MainTabPage(loginUser);
-						frame.dispose();
-//						frame.setVisible(false);
-//					}
+					new MainTabPage(loginUser);
+					frame.dispose();
 				}
 				else
 				{
@@ -162,16 +150,14 @@ public class Login {
 	public static void GetLoginInformation(String user, String pass)
 	{
 		LoginAccessLevel loginAccess = LoginAccessLevel.NONE;
-		String loginDoctorID;
-		String loginPatientID;
-		String loginStaffID;
+		String loginDoctorID, loginDoctorFirstName, loginDoctorLastName;
+		String loginPatientID, loginPatientFirstName, loginPatientLastName;
+		String loginStaffID, loginStaffFirstName, loginStaffLastName;
 		
 		ResultSet rs = dbQuery.Login_GetLoginInformation(user, pass);
 		
 		try {
 			while (rs.next()) {
-				//System.out.println("TESTING LOGIN: " + user + " " + pass);
-				//System.out.println("db RESULT FOUND: " + rs.getString("LoginName") + " + " + rs.getString("Pass"));
 				
 				// Test if login info matches db record
 				if(rs.getString("LoginName").equals(user)
@@ -211,10 +197,19 @@ public class Login {
 					}
 					
 					loginStaffID = rs.getString("StaffID");
+					loginStaffFirstName = rs.getString("StaffFirstName");
+					loginStaffLastName = rs.getString("StaffLastName");
 					loginDoctorID = rs.getString("DoctorID");
+					loginDoctorFirstName = rs.getString("DoctorFirstName");
+					loginDoctorLastName = rs.getString("DoctorLastName");
 					loginPatientID = rs.getString("PatientID");
+					loginPatientFirstName = rs.getString("PatientFirstName");
+					loginPatientLastName = rs.getString("PatientLastName");
 					
-					loginUser = new User(loginDoctorID, loginStaffID, loginPatientID, loginAccess);
+					loginUser = new User(loginDoctorID, loginDoctorFirstName, loginDoctorLastName, 
+							loginStaffID, loginStaffFirstName, loginStaffLastName,
+							loginPatientID, loginPatientFirstName, loginPatientLastName, 
+							loginAccess);
 					
 					System.out.println("VALID LOGIN.  AcessLevel: " + loginAccess.toString() + ". " + user + " + " + pass);
 					return;
@@ -226,6 +221,7 @@ public class Login {
 		} finally {
 			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
 		}
+		
 		// Failed login
 		loginUser = new User();
 	}
