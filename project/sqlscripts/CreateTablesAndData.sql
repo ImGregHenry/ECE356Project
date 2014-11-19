@@ -59,7 +59,6 @@ CREATE TABLE AccessLevels (
 
 INSERT INTO AccessLevels(AccessName)
 VALUES ('DOCTOR'),
-('LEGAL'),
 ('FINANCE'),
 ('STAFF'),
 ('PATIENT'),
@@ -83,9 +82,9 @@ CREATE TABLE LoginInfo (
 INSERT INTO LoginInfo (LoginName, Pass, StaffID, PatientID, DoctorID, AccessLevel)
 VALUES ('doctor', 'pass', NULL, NULL, '1','DOCTOR'),
 ('staff', 'pass', '2', NULL, NULL, 'STAFF'),
-('legal', 'pass', '4', NULL, NULL,'LEGAL'),
-('admin', 'pass', NULL, NULL, '1', 'ADMIN'),
-('patient', 'pass', NULL, '3', NULL, 'PATIENT');
+('finance', 'pass', '4', NULL, NULL,'FINANCE'),
+('patient', 'pass', NULL, '3', NULL, 'PATIENT'),
+('admin', 'pass', '1', '1', '1', 'DOCTOR');
 
 
 CREATE TABLE Medical (

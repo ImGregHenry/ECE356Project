@@ -27,12 +27,15 @@ public class AssignPatientToDoctor extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String staffID;
 	private JComboBox<CustomComboBoxItem> comboBox_Patient;
 	private JComboBox<CustomComboBoxItem> comboBox_Doctor;
 	private JLabel lbl_AssignPatientToDocMessage;
 	private JLabel lbl_DeletePatientToDocAssignment;
+	private JLabel lbl_PageTitle;
+	private JLabel lbl_WelcomeStaffMember; 
+	private User User;
 	private JTable table_PatientToDoctorAssignments;
+	
 	
 	private int TABLE_PATIENTID_COLUMN_INDEX = 2;
 	private int TABLE_DOCTORID_COLUMN_INDEX = 3;
@@ -43,10 +46,12 @@ public class AssignPatientToDoctor extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AssignPatientToDoctor(String _staffID) {
-		this.staffID = _staffID;
+	public AssignPatientToDoctor(User _user) {
+		this.User = _user;
 		
 		Initialize();
+		lbl_WelcomeStaffMember.setText("Welcome Staff Member: " + this.User.DoctorFirstName + " " + this.User.DoctorLastName);
+		
 		PopulatePatientDropDown();
 		PopulateDoctorDropDown();
 		PopulatePatientDoctorAssignmentTable();
@@ -65,7 +70,7 @@ public class AssignPatientToDoctor extends JPanel {
 	
 	private void PopulatePatientDoctorAssignmentTable()
 	{
-		ResultSet rs = dbQuery.Staff_GetPatientDoctorAssignments();
+		ResultSet rs = dbQuery.Staff_GetPatientToDoctorAssignments();
 		
 		ResetPatientDoctorAssignmentTable();
 		
@@ -94,22 +99,23 @@ public class AssignPatientToDoctor extends JPanel {
 	private void Initialize()
 	{
 		setLayout(null);
+		
 		comboBox_Patient = new JComboBox<CustomComboBoxItem>();
-		comboBox_Patient.setBounds(125, 80, 156, 20);
+		comboBox_Patient.setBounds(197, 140, 300, 20);
 		add(comboBox_Patient);
 		
 		JLabel lbl_Patient = new JLabel("Patient:");
-		lbl_Patient.setBounds(69, 83, 46, 14);
+		lbl_Patient.setBounds(141, 143, 46, 14);
 		lbl_Patient.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(lbl_Patient);
 		
 		JLabel lbl_Doctor = new JLabel("Doctor:");
-		lbl_Doctor.setBounds(69, 129, 46, 14);
+		lbl_Doctor.setBounds(141, 189, 46, 14);
 		lbl_Doctor.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(lbl_Doctor);
 		
 		comboBox_Doctor = new JComboBox<CustomComboBoxItem>();
-		comboBox_Doctor.setBounds(125, 126, 156, 20);
+		comboBox_Doctor.setBounds(197, 186, 300, 20);
 		add(comboBox_Doctor);
 		
 		JButton btn_AssignPatientToDoctor = new JButton("Assign Patient to Doctor");
@@ -130,14 +136,13 @@ public class AssignPatientToDoctor extends JPanel {
 					lbl_AssignPatientToDocMessage.setText("Failed to assign patient to doctor.");
 					lbl_DeletePatientToDocAssignment.setText("");
 				}
-				
 			}
 		});
-		btn_AssignPatientToDoctor.setBounds(305, 104, 243, 23);
+		btn_AssignPatientToDoctor.setBounds(539, 166, 243, 23);
 		add(btn_AssignPatientToDoctor);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(28, 243, 603, 402);
+		scrollPane.setBounds(101, 318, 603, 402);
 		add(scrollPane);
 		
 			
@@ -186,7 +191,7 @@ public class AssignPatientToDoctor extends JPanel {
 		
 		lbl_AssignPatientToDocMessage = new JLabel("");
 		lbl_AssignPatientToDocMessage.setFont(new Font("Calibri", Font.BOLD, 15));
-		lbl_AssignPatientToDocMessage.setBounds(315, 134, 304, 30);
+		lbl_AssignPatientToDocMessage.setBounds(539, 198, 424, 30);
 		add(lbl_AssignPatientToDocMessage);
 		
 		JButton btnDeleteSelectedPatient = new JButton("Delete Selected Patient Assignment");
@@ -205,13 +210,23 @@ public class AssignPatientToDoctor extends JPanel {
 				PopulatePatientDoctorAssignmentTable();
 			}
 		});
-		btnDeleteSelectedPatient.setBounds(162, 207, 271, 23);
+		btnDeleteSelectedPatient.setBounds(197, 267, 308, 23);
 		add(btnDeleteSelectedPatient);
 		
 		lbl_DeletePatientToDocAssignment = new JLabel("");
 		lbl_DeletePatientToDocAssignment.setFont(new Font("Calibri", Font.BOLD, 15));
-		lbl_DeletePatientToDocAssignment.setBounds(443, 207, 304, 30);
+		lbl_DeletePatientToDocAssignment.setBounds(551, 260, 444, 30);
 		add(lbl_DeletePatientToDocAssignment);
+		
+		lbl_PageTitle = new JLabel("Assign Patient To Doctor");
+		lbl_PageTitle.setFont(new Font("Calibri", Font.BOLD, 28));
+		lbl_PageTitle.setBounds(281, 11, 372, 30);
+		add(lbl_PageTitle);
+		
+		lbl_WelcomeStaffMember = new JLabel("Welcome Staff Member:");
+		lbl_WelcomeStaffMember.setFont(new Font("Calibri", Font.BOLD, 20));
+		lbl_WelcomeStaffMember.setBounds(73, 67, 530, 30);
+		add(lbl_WelcomeStaffMember);
 	}
 	
 	private void PopulatePatientDropDown()
