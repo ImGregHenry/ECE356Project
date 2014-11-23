@@ -333,6 +333,19 @@ public class dbQuery {
 
 		return rs;
 	}
+
+	public static ResultSet Staff_GetAllDoctorInfoAssignedToStaffMember(String staffID) {
+		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
+				+ "FROM staffdoctoraccess sda "
+				+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID " 
+				+ "WHERE StaffID = 1 "
+				+ "AND PatientID IS NULL "
+				+ "AND DoctorIDSharingPatient IS NULL";
+
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
 	
 	public static void Staff_DeletePatientToDoctorAssignment(String patientID, String doctorID)
 	{
@@ -531,4 +544,16 @@ public class dbQuery {
 
 		return rs;
 	}
+	
+	// **************************
+	// Finance.java
+	// **************************
+	//	SELECT d.DoctorID, d.FirstName, d.LastName, d.Specialty,  SUM(vr.ProcedureFee) AS ApptIncome, AVG(vr.ProcedureFee) AS ApptAvgIncome, COUNT(*) AS ApptCount
+	//	FROM Doctor d
+	//	INNER JOIN Appointment a ON a.DoctorID = d.DoctorID
+	//	INNER JOIN VisitationRecord vr ON vr.AppointmentID = a.AppointmentID
+	//	GROUP BY d.DoctorID
+
+
+
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="img"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Greg&apos;sMonster/Documents/Dropbox/3B - Fall 2014/ECE 356/Project/Project/lib/mysql-connector-java-5.0.8-bin.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Greg&apos;sMonster/Documents/Dropbox/3B - Fall 2014/ECE 356/Project/Project/lib/jcalendar-1.4.jar"/>

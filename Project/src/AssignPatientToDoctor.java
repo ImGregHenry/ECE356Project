@@ -1,6 +1,7 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -15,8 +16,11 @@ import javax.swing.event.ListSelectionListener;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 
 import javax.swing.ListSelectionModel;
+
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -52,11 +56,16 @@ public class AssignPatientToDoctor extends JPanel {
 		Initialize();
 		lbl_WelcomeStaffMember.setText("Welcome Staff Member: " + this.User.DoctorFirstName + " " + this.User.DoctorLastName);
 		
+		LoadPage();
+	}
+
+	private void LoadPage()
+	{
 		PopulatePatientDropDown();
 		PopulateDoctorDropDown();
 		PopulatePatientDoctorAssignmentTable();
 	}
-
+	
 	private void ResetPatientDoctorAssignmentTable()
 	{
 		if(table_PatientToDoctorAssignments != null)
@@ -68,15 +77,23 @@ public class AssignPatientToDoctor extends JPanel {
 		}
 	}
 	
+	private void ResetPatientDropDown()
+	{
+		comboBox_Patient.removeAllItems();
+	}
+	
+	private void ResetDoctorDropDown()
+	{
+		comboBox_Doctor.removeAllItems();
+	}
+	
 	private void PopulatePatientDoctorAssignmentTable()
 	{
 		ResultSet rs = dbQuery.Staff_GetPatientToDoctorAssignments();
 		
 		ResetPatientDoctorAssignmentTable();
 		
-		
-		
-		System.out.println("Querying for Patient to Doctor Assignments.");
+		//System.out.println("Querying for Patient to Doctor Assignments.");
 		
 		Object[] row = new Object[tableColumns.length];
 		try {
@@ -108,6 +125,17 @@ public class AssignPatientToDoctor extends JPanel {
 		lbl_Patient.setBounds(141, 143, 46, 14);
 		lbl_Patient.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(lbl_Patient);
+		
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btnNewButton = new JButton("", refreshImage);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadPage();
+			}
+		});
+		btnNewButton.setBounds(10, 11, 35, 35);
+		add(btnNewButton);
 		
 		JLabel lbl_Doctor = new JLabel("Doctor:");
 		lbl_Doctor.setBounds(141, 189, 46, 14);
@@ -150,9 +178,6 @@ public class AssignPatientToDoctor extends JPanel {
 		
 			table_PatientToDoctorAssignments = new JTable(model) 
 			{
-				/**
-				 * 
-				 */
 				private static final long serialVersionUID = 1L;
 	
 				public boolean isCellEditable(int row, int column) {
@@ -232,6 +257,8 @@ public class AssignPatientToDoctor extends JPanel {
 	private void PopulatePatientDropDown()
 	{
 		try {
+			ResetPatientDropDown();
+			
 			ResultSet rs = dbQuery.Staff_GetAllPatientInfo();
 			
 			while(rs.next())
@@ -252,8 +279,9 @@ public class AssignPatientToDoctor extends JPanel {
 	private void PopulateDoctorDropDown()
 	{
 		try {
+			ResetDoctorDropDown();
 			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
+			ResultSet rs = dbQuery.Staff_GetAllDoctorInfoAssignedToStaffMember(this.User.StaffID);
 			
 			while(rs.next())
 			{  

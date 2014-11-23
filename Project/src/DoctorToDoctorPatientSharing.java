@@ -1,3 +1,4 @@
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
@@ -63,6 +64,17 @@ public class DoctorToDoctorPatientSharing extends JPanel {
 		scrollPane.setBounds(101, 318, 903, 402);
 		add(scrollPane);
 
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btnNewButton = new JButton("", refreshImage);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Refresh();
+			}
+		});	
+		btnNewButton.setBounds(10, 11, 35, 35);
+		add(btnNewButton);
+		
 		DefaultTableModel model = new DefaultTableModel(tableColumns, 0);
 	
 		table_PatientToDoctorAssignments = new JTable(model);
@@ -203,6 +215,7 @@ public class DoctorToDoctorPatientSharing extends JPanel {
 	private void PopulateAssignToDoctorDropDown()
 	{
 		try {
+			comboBox_Doctor.removeAllItems();
 			ResultSet rs = dbQuery.Staff_GetAllDoctorsExceptDocID(this.User.DoctorID);
 			
 			while(rs.next())
@@ -219,10 +232,11 @@ public class DoctorToDoctorPatientSharing extends JPanel {
 		}
 	}
 	
-
 	private void PopulatePatientDropDown()
 	{
 		try {
+			comboBox_Patient.removeAllItems();
+			
 			// Exclude the current doctor
 			ResultSet rs = dbQuery.Doctor_GetAllDoctorsAssignedPatients(this.User.DoctorID);
 			
