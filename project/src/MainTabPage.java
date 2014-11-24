@@ -3,10 +3,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import java.awt.Component;
 import java.awt.Font;
-import java.lang.reflect.Type;
 
 
 
@@ -69,9 +66,11 @@ public class MainTabPage {
 		tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
 		tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
 		tabbedPane.addTab("Appointments", new AppointmentPanel(loginUser)); 
-		
-		tabbedPane.addTab("Create Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.CREATE, -1));
-		tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, 1));
+		//tabbedPane.addTab("Create Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.CREATE, loginUser));
+		tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, loginUser));
+		tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
+		//tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
+				
 		tabbedPane.addTab("VisitationRecord", new VisitationRecordPanel(1));
 		tabbedPane.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {

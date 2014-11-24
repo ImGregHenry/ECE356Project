@@ -135,7 +135,7 @@ public class dbQuery {
 		return rs;
 	}
 
-	public static ResultSet Patient_GetPatientInformation(int patientID) {
+	public static ResultSet Patient_GetPatientInformation(String patientID) {
 		String query = "SELECT * FROM Patient WHERE PatientID = " + patientID;
 
 		ResultSet rs = dbQuery.GetResultSet(query);
@@ -147,8 +147,13 @@ public class dbQuery {
 			String firstName, String lastName, String healthCardNum, 
 			String address, String phoneNumber)
 	{
-		String query = "INSERT INTO Patient (SocialInsuranceNumber, FirstName, LastName, HealthCardNumber, Address, PhoneNumber, CurrentStatus)";
-		query += " VALUES ('" + sin + "', " + firstName + "', " + lastName + "', " + healthCardNum + "', " + address + "', " + phoneNumber + ", 'Alive')";
+//		String query = "INSERT INTO Patient (PatientID, SocialInsuranceNumber, FirstName, LastName, HealthCardNumber, Address, PhoneNumber, CurrentStatus)";
+//		query += " VALUES ('" + sin + "', '" + firstName + "', '" + lastName + "', '" + healthCardNum + "', '" + address + "', '" + phoneNumber + "', 'Alive')";
+
+		String query = "INSERT INTO Patient (PatientID, SocialInsuranceNumber, FirstName, LastName, HealthCardNumber, Address, PhoneNumber, CurrentStatus, NumberOfVisits) " 
+			+ "SELECT CAST((MAX(CAST(PatientID AS UNSIGNED))+1) AS CHAR) AS ID, "//'123', '123', '123', '123', '123', '123', 'Alive', '0' " +
+			+ "'" + sin + "', '" + firstName + "', '" + lastName + "', '" + healthCardNum + "', '" + address + "', '" + phoneNumber + "', 'Alive', '0' "
+			+ "FROM Patient ORDER BY ID DESC";
 		
 		//System.out.println("Create Patient QUERY: " + query);
 
@@ -164,13 +169,34 @@ public class dbQuery {
 				+ firstName + "'," + " LastName = '" + lastName + "',"
 				+ " HealthCardNumber ='" + healthCardNum + "',"
 				+ " Address = '" + address + "'," + " PhoneNumber = '"
-				+ phoneNumber + "'" + " WHERE PatientID = " + patient;
+				+ phoneNumber + "'" + " WHERE PatientID = '" + patient + "'";
 
 		//System.out.println("Update Patient Query: " + query);
 
 		dbQuery.ExecuteDatabaseQuery(query);
 	}
 	
+	public static ResultSet GetPatientList(String DoctorID) {
+		String query = "SELECT p.FirstName, p.LastName, p.PatientID "
+				+ "FROM Patient p "
+				+ "INNER JOIN StaffDoctorAccess a ON a.PatientID = p.PatientID "
+				+ "WHERE a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NULL";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	public static ResultSet Doctor_GetDoctorList(String DoctorID) {
+		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
+				+ "FROM Doctor d "
+				+ "INNER JOIN StaffDoctorAccess a ON a.DoctorIDSharingPatient = d.DoctorID "
+				+ "WHERE a.AssignedToDoctorID = '" + DoctorID;
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
 	
 	// **************************
 	// AppointmentPanel.java
@@ -309,8 +335,11 @@ public class dbQuery {
 		return rs;
 	}
 
-	public static ResultSet Staff_GetAllDoctorInfo() {
-		String query = "SELECT * FROM Doctor";
+	public static ResultSet Staff_GetAllDoctorInfo(String staffID) {
+		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
+				+ "FROM Doctor d "
+				+ "INNER JOIN StaffDoctorAccess a ON a.AssignedToDoctorID = d.DoctorID "
+				+ "WHERE a.StaffID = '" + staffID + "' AND a.DoctorIDSharingPatient IS NULL";
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
