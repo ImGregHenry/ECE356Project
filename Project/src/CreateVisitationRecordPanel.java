@@ -329,7 +329,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		try {
 			ResultSet rs = dbQuery.Staff_GetAllPatientInfo();
 			
-			comboBox_SchedulePatient.addItem(new CustomComboBoxItem("-1", ""));
+			comboBox_SchedulePatient.addItem(new CustomComboBoxItem("-1", "All"));
 			while(rs.next())
 			{  
 				String patientName = rs.getObject("FirstName") + " " + rs.getObject("LastName");
@@ -349,7 +349,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		try {
 			
 			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
-			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", ""));			
+			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", "All"));			
 			while(rs.next())
 			{  
 				String doctorName = rs.getObject("FirstName") + " " + rs.getObject("LastName"); 

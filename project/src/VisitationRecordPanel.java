@@ -266,7 +266,7 @@ public class VisitationRecordPanel extends JPanel {
 		try {
 			
 			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
-			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", ""));			
+			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", "All"));			
 			while(rs.next())
 			{  
 				String doctorName = rs.getObject("FirstName") + " " + rs.getObject("LastName"); 
