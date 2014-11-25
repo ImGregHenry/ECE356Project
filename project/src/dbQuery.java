@@ -585,14 +585,7 @@ public class dbQuery {
 		return rs;
 	}
 	
-	// **************************
-	// Finance.java
-	// **************************
-	//	SELECT d.DoctorID, d.FirstName, d.LastName, d.Specialty,  SUM(vr.ProcedureFee) AS ApptIncome, AVG(vr.ProcedureFee) AS ApptAvgIncome, COUNT(*) AS ApptCount
-	//	FROM Doctor d
-	//	INNER JOIN Appointment a ON a.DoctorID = d.DoctorID
-	//	INNER JOIN VisitationRecord vr ON vr.AppointmentID = a.AppointmentID
-	//	GROUP BY d.DoctorID
+	
 
 
 	
@@ -779,5 +772,51 @@ public class dbQuery {
 		System.out.println(query);
 		ResultSet rs = dbQuery.GetResultSet(query);
 		return rs;
+	}
+	
+	
+	// **************************
+	// Finance.java
+	// **************************
+	public static ResultSet Finance_GetAllProcedures()
+	{
+		String query = "SELECT ProcedureName, ProcedureFee "
+				+ "FROM Medical ";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+	}
+	
+	public static ResultSet Finance_GetDoctorFinanceInfo(String docID, String patID, String procedureName, Date startDate, Date endDate)
+	{
+		String query = "select d.FirstName AS DoctorFirstName, d.LastName AS DoctorLastName, a.AppointmentID, a.AppointmentDate, a.AppointmentLength, p.FirstName as PatientFirstName, "
+					+ "p.LastName as PatientLastName, m.Prescription ,vr.ProcedureName, vr.ProcedureFee,  '100' as VisitationFee "
+					+ "from appointment a "
+					+ "inner join visitationrecord vr on a.AppointmentID=vr.AppointmentID "
+					+ "inner join medical m on vr.ProcedureName=m.ProcedureName "
+					+ "inner join patient p on p.PatientID=a.PatientID "
+					+ "inner join doctor d on d.DoctorID=a.DoctorID "
+					+ "WHERE a.AppointmentDate > '" + dbDateFormat.format(startDate) + "' "
+					+ "AND a.AppointmentDate < '" + dbDateFormat.format(endDate) + "' ";
+					
+		if(docID != "ALL")
+		{
+			query += "AND a.DoctorID = '"+ docID + "' ";
+		}
+		if(patID != "ALL")
+		{
+			query += "AND a.PatientID = '"+ patID + "' ";
+		}
+		if(procedureName != "ALL")
+		{
+			query += "AND vr.ProcedureName = '" + procedureName + "' ";
+		}
+		
+					
+		ResultSet rs = dbQuery.GetResultSet(query);
+
+		return rs;
+
 	}
 }

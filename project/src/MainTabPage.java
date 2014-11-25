@@ -82,7 +82,8 @@ public class MainTabPage {
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
 		}
-		
+		tabbedPane.addTab("Finance", new FinanceTab(loginUser));
+
 		tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));
 		tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
 		tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
