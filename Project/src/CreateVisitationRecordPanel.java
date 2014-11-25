@@ -112,10 +112,16 @@ public class CreateVisitationRecordPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,"Please select a record");			
 					return;
 				}
+				
 				System.out.println(txt_ApptLength.getText().equals(appLength));
 				System.out.println(txtVReason.getText().equals(vReason));
 				System.out.println(tfDocComm.getText().equals(dComments));
 				CustomComboBoxItem procItem = ((CustomComboBoxItem) comboBox_Procedures.getSelectedItem());
+				if (procItem.getID().equals("-1"))
+				{
+					JOptionPane.showMessageDialog(null,"Please select the procedure");
+					return;
+				}
 				if(txt_ApptLength.getText().equals(appLength) && txtVReason.getText().equals(vReason) && tfDocComm.getText().equals(dComments) &&
 						procItem.getName().equals(procName))
 				{
