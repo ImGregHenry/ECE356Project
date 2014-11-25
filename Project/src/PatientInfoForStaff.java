@@ -303,13 +303,12 @@ public class PatientInfoForStaff extends JPanel {
 		{
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				// TODO Auto-generated method stub
-			            // Prevent this event from firing until the combo box is fully populated (each item added fires this event)
-			        	if(e.getStateChange() == ItemEvent.SELECTED
-			            		&& isDoctorComboBoxLoaded)
-			            {
-				        	PopulatePatientTable();
-			            }
+	            // Prevent this event from firing until the combo box is fully populated (each item added fires this event)
+	        	if(e.getStateChange() == ItemEvent.SELECTED
+	            		&& isDoctorComboBoxLoaded)
+	            {
+		        	PopulatePatientTable();
+	            }
 			}
 	    });
 		comboBox_Doctor.setBounds(118, 36, 219, 20);

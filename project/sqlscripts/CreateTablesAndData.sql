@@ -162,13 +162,13 @@ CREATE TABLE VisitationRecord (
     VisitReason VARCHAR(100) NOT NULL,
     ProcedureFee INT NOT NULL,  
     ProcedureName VARCHAR(100) NOT NULL,
-    
+    EnteredDate DATETIME NOT NULL,
     PRIMARY KEY (AppointmentID),
     FOREIGN KEY (AppointmentID) REFERENCES Appointment (AppointmentID),
     FOREIGN KEY (ProcedureName) REFERENCES Medical (ProcedureName)
 );
 
 
-INSERT INTO VisitationRecord (AppointmentID, DoctorComment, VisitReason, ProcedureFee, ProcedureName)
-VALUES (1, 'What a visit that was.  Amazing patient.', 'Strictly business', 100, 'Consultation'),
-(2, 'Things got prickly.', 'Acupunture Session', 80, 'Acupuncture');
+INSERT INTO VisitationRecord (AppointmentID, DoctorComment, VisitReason, ProcedureFee, ProcedureName, EnteredDate)
+VALUES (1, 'What a visit that was.  Amazing patient.', 'Strictly business', 100, 'Consultation', '2014-11-27 17:20:00' ),
+(2, 'Things got prickly.', 'Acupunture Session', 80, 'Acupuncture','2014-11-25 16:00:00');
