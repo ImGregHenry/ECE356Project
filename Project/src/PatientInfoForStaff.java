@@ -69,6 +69,7 @@ public class PatientInfoForStaff extends JPanel {
 		initialize();
 		
 		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and StaffID: " + _user.StaffID);
+		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and DoctorID: " + _user.DoctorID);
 		if(this.pageLoadMode == PatientLoadMode.STAFF)
 		{
 			PopulateStaffDoctorDropDown(_user.StaffID);
@@ -102,7 +103,12 @@ public class PatientInfoForStaff extends JPanel {
 				txt_Address.setText(rs.getString("Address"));
 				txt_PhoneNumber.setText(rs.getString("PhoneNumber"));
 				txt_HealthCardNum.setText(rs.getString("HealthCardNumber"));
-				// txt_LastVisitDate.setText(rs.getString(""));
+				}
+				ResultSet rs_date = dbQuery.Patient_GetLastVisitDate(patientID);
+
+				while(rs_date.next()){
+					
+				txt_LastVisitDate.setText(rs_date.getString("LastVisitDate"));
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -184,6 +190,8 @@ public class PatientInfoForStaff extends JPanel {
 				
 			    row[0] = rs.getObject("FirstName") + " " + rs.getObject("LastName");	// Patient Name
 			    row[1] = rs.getObject("PatientID");	// Patient ID
+			    
+			    System.out.println(table_Patients.getModel().getRowCount());
 			    ((DefaultTableModel) table_Patients.getModel()).insertRow(rs.getRow()-1, row);
 			}
 			
@@ -350,8 +358,11 @@ public class PatientInfoForStaff extends JPanel {
 				}
 			});
 		this.add(chckbx_CreateNew);
-
-
+		}
+		else if (pageLoadMode == PatientLoadMode.DOCTOR)
+		{
+			chckbx_CreateNew.setVisible(false);
+		}
 		DefaultTableModel model = new DefaultTableModel(tableColumns, 0);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -371,7 +382,6 @@ public class PatientInfoForStaff extends JPanel {
 		};
 		table_Patients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_Patients.getColumnModel().getColumn(0).setPreferredWidth(110);
-
 		table_Patients.removeColumn(table_Patients.getColumnModel().getColumn(TABLE_PATIENT_ID_COLUMN_INDEX));
 		
 		table_Patients.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -391,6 +401,7 @@ public class PatientInfoForStaff extends JPanel {
 		table_Patients.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table_Patients.setBounds(782, 495, -382, -100);
 		table_Patients.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		System.out.println(table_Patients.getModel());
 		scrollPane.setViewportView(table_Patients);
 
 		btnUpdate = new JButton();
@@ -428,7 +439,6 @@ public class PatientInfoForStaff extends JPanel {
 		if (pageLoadMode != PatientLoadMode.DOCTOR) 
 		{
 			this.add(btnUpdate);
-		}
 		}
 	}
 }

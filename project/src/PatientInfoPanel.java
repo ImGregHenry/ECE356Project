@@ -93,7 +93,12 @@ public class PatientInfoPanel extends JPanel {
 				txt_Address.setText(rs.getString("Address"));
 				txt_PhoneNumber.setText(rs.getString("PhoneNumber"));
 				txt_HealthCardNum.setText(rs.getString("HealthCardNumber"));
-				// txt_LastVisitDate.setText(rs.getString(""));
+				}
+				ResultSet rs_date = dbQuery.Patient_GetLastVisitDate(patientID);
+
+				while(rs_date.next()){
+					
+				txt_LastVisitDate.setText(rs_date.getString("LastVisitDate"));
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

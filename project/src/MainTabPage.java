@@ -44,43 +44,25 @@ public class MainTabPage {
 		tabbedPane.setBounds(50, 50, 100, 100);
 		tabbedPane.setSize(frmProject.getBounds().width, frmProject.getBounds().height);
 		
-
-		
-		if(this.accessLevel == Login.LoginAccessLevel.DOCTOR)
-		{
-			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
-			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
-		}
-		else if(this.accessLevel == Login.LoginAccessLevel.FINANCE)
-		{
-			
-		}
-		else if(this.accessLevel == Login.LoginAccessLevel.PATIENT)
-		{
-		}
-		else if(this.accessLevel == Login.LoginAccessLevel.ADMIN)
-		{
-			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
-			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
-		}
-		else if(this.accessLevel == Login.LoginAccessLevel.NONE)
-		{
-			
-		}
-		
 		if (loginUser.accessLevel == Login.LoginAccessLevel.DOCTOR)
 		{
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
+			tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
 		}
 		else if ( loginUser.accessLevel == Login.LoginAccessLevel.PATIENT)
 		{
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
+			tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, loginUser));
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.ADMIN)
 		{
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
+		}
+		else if (loginUser.accessLevel == Login.LoginAccessLevel.STAFF)
+		{
+			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
 		}
 		tabbedPane.addTab("Finance", new FinanceTab(loginUser));
 

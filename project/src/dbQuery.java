@@ -202,11 +202,23 @@ public class dbQuery {
 		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
 				+ "FROM Doctor d "
 				+ "INNER JOIN StaffDoctorAccess a ON a.DoctorIDSharingPatient = d.DoctorID "
-				+ "WHERE a.AssignedToDoctorID = '" + DoctorID;
+				+ "WHERE a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NULL";
 		
 		ResultSet rs = dbQuery.GetResultSet(query);
 
 		return rs;
+	}
+	
+	public static ResultSet Patient_GetLastVisitDate(String patientID) {
+		String query = "SELECT max(EnteredDate) as LastVisitDate "
+				+ "FROM VisitationRecord vr "
+				+ "INNER JOIN Appointment a on a.AppointmentID = vr.AppointmentID "
+				+ "INNER JOIN Patient p on p.PatientID = a.PatientID "
+				+ "WHERE p.PatientID = " + patientID;
+
+		ResultSet rs_date = dbQuery.GetResultSet(query);
+
+		return rs_date;
 	}
 	
 	// **************************
