@@ -1,3 +1,4 @@
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
@@ -45,6 +46,12 @@ public class AssignStaffToDoctor extends JPanel {
 		
 		Initialize();
 		lbl_WelcomeDoctor.setText("Welcome Doctor: " + this.User.DoctorFirstName + " " + this.User.DoctorLastName);
+		
+		LoadPage();
+	}
+	
+	private void LoadPage()
+	{
 		PopulateStaffDropDown();
 		PopulateDoctorDropDown();
 		PopulateStaffDoctorAssignmentTable();
@@ -58,6 +65,17 @@ public class AssignStaffToDoctor extends JPanel {
 		scrollPane.setBounds(101, 318, 603, 402);
 		add(scrollPane);
 
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btnNewButton = new JButton("", refreshImage);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadPage();
+			}
+		});	
+		btnNewButton.setBounds(10, 11, 35, 35);
+		add(btnNewButton);
+		
 		DefaultTableModel model = new DefaultTableModel(tableColumns, 0);
 	
 		table_StaffToDoctorAssignments = new JTable(model);
@@ -193,6 +211,8 @@ public class AssignStaffToDoctor extends JPanel {
 	private void PopulateStaffDropDown()
 	{
 		try {
+			comboBox_Staff.removeAllItems();
+			
 			ResultSet rs = dbQuery.Staff_GetAllStaffInfo();
 			
 			while(rs.next())
@@ -212,6 +232,7 @@ public class AssignStaffToDoctor extends JPanel {
 
 	private void PopulateDoctorDropDown()
 	{
+		comboBox_Doctor.removeAllItems();
 		comboBox_Doctor.addItem(new CustomComboBoxItem(this.User.DoctorID, this.User.DoctorFirstName + " " + this.User.DoctorLastName));
 	}
 }

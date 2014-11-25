@@ -60,11 +60,8 @@ public class AppointmentPanel extends JPanel {
 		this.user = _user;
 		initialize();
 
-		
-		dbQuery.StartDBConnection();
-		
 		PopulatePatientDropDown();
-		PopulateDoctorDropDown();
+		PopulateDoctorDropDown(this.user.StaffID);
 		isDoctorComboBoxLoaded = true;	//NOTE: keep this flag set after PopulateDoctorDropDown() method, IMPORTANT!
 		PopulateAppointmentTable();
 		
@@ -91,11 +88,11 @@ public class AppointmentPanel extends JPanel {
 		}
 	}
 	
-	private void PopulateDoctorDropDown()
+	private void PopulateDoctorDropDown(String staffID)
 	{
 		try {
 			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
+			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo(staffID);
 			
 			comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem("ALL", "ALL"));
 			

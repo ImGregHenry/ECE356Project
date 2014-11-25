@@ -164,9 +164,10 @@ public class Login {
 						|| rs.getString("Pass").equals(pass))
 				{
 					// Get access permission level
-					String access = rs.getString("AccessLevel");
-					access = "DOCTOR";
 					
+					String access = rs.getString("AccessLevel");
+					
+					System.out.println("The access Level " +access);
 					if(access.equals(LoginAccessLevel.DOCTOR.toString()))
 					{
 						loginAccess = LoginAccessLevel.DOCTOR;

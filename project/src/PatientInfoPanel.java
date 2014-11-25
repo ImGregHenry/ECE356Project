@@ -7,14 +7,16 @@ import javax.swing.SwingConstants;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class PatientInfoPanel extends JPanel {
 
 	public static enum PatientLoadMode {
-		UPDATE, CREATE
+		UPDATE
 	}
 
 	private PatientLoadMode pageLoadMode;
@@ -36,7 +38,7 @@ public class PatientInfoPanel extends JPanel {
 	private JTextField txt_Address;
 	private JTextField txt_LastVisitDate;
 	private JLabel lbl_LastVisitDate;
-	private JButton btn_Update;
+	private JButton btnUpdate;
 	private JTextField txt_PhoneNumber;
 	private JLabel lbl_PhoneNumber;
 	private JLabel lbl_UpdateMessage;
@@ -60,12 +62,14 @@ public class PatientInfoPanel extends JPanel {
 	/**
 	 * Create the application.
 	 */
-	public PatientInfoPanel(PatientLoadMode mode, int patientID) {
+	public PatientInfoPanel(PatientLoadMode mode, User _user) {
 		this.pageLoadMode = mode;
-
-		System.out.println("Loading Patient Info Panel in Mode: " + mode);
-
 		initialize();
+		
+		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and PatientID: " + _user.PatientID);
+		
+		loadPatientInformation(_user.PatientID);
+		
 		// dbQuery.StartDBConnection();
 		//
 		// if(pageLoadMode == PatientLoadMode.UPDATE)
@@ -73,16 +77,16 @@ public class PatientInfoPanel extends JPanel {
 
 	}
 
-	private void loadPatientInformation(int patientID) {
+	private void loadPatientInformation(String patientID) {
 		ResultSet rs = dbQuery.Patient_GetPatientInformation(patientID);
 
 		if (rs != null) {
 			System.out.println("Patient Information Loaded Successfully.");
 
 			try {
-				rs.next();
+				while(rs.next()){
 
-				txt_PatientID.setText(rs.getString("PatientID"));
+				txt_PatientID.setText(rs.getObject("PatientID").toString());
 				txt_SIN.setText(rs.getString("SocialInsuranceNumber"));
 				txt_FirstName.setText(rs.getString("FirstName"));
 				txt_LastName.setText(rs.getString("LastName"));
@@ -90,7 +94,7 @@ public class PatientInfoPanel extends JPanel {
 				txt_PhoneNumber.setText(rs.getString("PhoneNumber"));
 				txt_HealthCardNum.setText(rs.getString("HealthCardNumber"));
 				// txt_LastVisitDate.setText(rs.getString(""));
-
+				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -111,10 +115,10 @@ public class PatientInfoPanel extends JPanel {
 		this.setLayout(null);
 
 		txt_PatientID = new JTextField();
+		txt_PatientID.setEditable(false);
 		txt_PatientID.setBounds(120, 72, 219, 20);
 		this.add(txt_PatientID);
 		txt_PatientID.setColumns(10);
-		txt_PatientID.setEditable(false);
 
 		JLabel lbl_PatientID = new JLabel("Patient Num:");
 		lbl_PatientID.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -127,11 +131,13 @@ public class PatientInfoPanel extends JPanel {
 		this.add(lbl_SIN);
 
 		txt_SIN = new JTextField();
+		txt_SIN.setEditable(false);
 		txt_SIN.setColumns(10);
 		txt_SIN.setBounds(120, 103, 219, 20);
 		this.add(txt_SIN);
 
 		txt_FirstName = new JTextField();
+		txt_FirstName.setEditable(false);
 		txt_FirstName.setColumns(10);
 		txt_FirstName.setBounds(120, 131, 219, 20);
 		this.add(txt_FirstName);
@@ -147,18 +153,20 @@ public class PatientInfoPanel extends JPanel {
 		this.add(lbl_LastName);
 
 		txt_LastName = new JTextField();
+		txt_LastName.setEditable(false);
 		txt_LastName.setColumns(10);
 		txt_LastName.setBounds(120, 162, 219, 20);
 		this.add(txt_LastName);
 
 		txt_HealthCardNum = new JTextField();
+		txt_HealthCardNum.setEditable(false);
 		txt_HealthCardNum.setColumns(10);
-		txt_HealthCardNum.setBounds(120, 225, 219, 20);
+		txt_HealthCardNum.setBounds(120, 192, 219, 20);
 		this.add(txt_HealthCardNum);
 
 		lbl_HealthCardNumber = new JLabel("Health Card Num:");
 		lbl_HealthCardNumber.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_HealthCardNumber.setBounds(10, 228, 100, 14);
+		lbl_HealthCardNumber.setBounds(10, 198, 100, 14);
 		this.add(lbl_HealthCardNumber);
 
 		lbl_Address = new JLabel("Address:");
@@ -181,13 +189,27 @@ public class PatientInfoPanel extends JPanel {
 		lbl_LastVisitDate.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbl_LastVisitDate.setBounds(10, 287, 100, 14);
 		this.add(lbl_LastVisitDate);
+		
+		txt_PhoneNumber = new JTextField();
+		txt_PhoneNumber.setColumns(10);
+		txt_PhoneNumber.setBounds(120, 224, 219, 20);
+		this.add(txt_PhoneNumber);
 
-		if (pageLoadMode == PatientLoadMode.CREATE)
-			btn_Update = new JButton("Create");
-		else if (pageLoadMode == PatientLoadMode.UPDATE)
-			btn_Update = new JButton("Update");
+		lbl_PhoneNumber = new JLabel("Phone Number");
+		lbl_PhoneNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		lbl_PhoneNumber.setBounds(10, 229, 100, 14);
+		this.add(lbl_PhoneNumber);
 
-		btn_Update.addActionListener(new ActionListener() {
+		lbl_UpdateMessage = new JLabel("");
+		lbl_UpdateMessage.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_UpdateMessage.setBounds(160, 331, 123, 14);
+		this.add(lbl_UpdateMessage);
+		lbl_PhoneNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		if (pageLoadMode == PatientLoadMode.UPDATE)
+			btnUpdate = new JButton("Update");
+
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				// TODO: error checking on patient update
@@ -202,7 +224,8 @@ public class PatientInfoPanel extends JPanel {
 							txt_PhoneNumber.getText());
 
 					lbl_UpdateMessage.setText("Patient Update Successful.");
-				} else if (pageLoadMode == PatientLoadMode.CREATE) {
+				} 
+				/*else if (pageLoadMode == PatientLoadMode.CREATE) {
 					dbQuery.Patient_CreateNewPatientInformation(
 							txt_SIN.getText(), txt_FirstName.getText(),
 							txt_LastName.getText(),
@@ -210,26 +233,11 @@ public class PatientInfoPanel extends JPanel {
 							txt_PhoneNumber.getText());
 
 					lbl_UpdateMessage.setText("Patient Creation Successful.");
-				}
+				}*/
 
 			}
 		});
-		btn_Update.setBounds(174, 315, 89, 23);
-		this.add(btn_Update);
-
-		txt_PhoneNumber = new JTextField();
-		txt_PhoneNumber.setColumns(10);
-		txt_PhoneNumber.setBounds(120, 194, 219, 20);
-		this.add(txt_PhoneNumber);
-
-		lbl_PhoneNumber = new JLabel("Phone Number");
-		lbl_PhoneNumber.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_PhoneNumber.setBounds(10, 197, 100, 14);
-		this.add(lbl_PhoneNumber);
-
-		lbl_UpdateMessage = new JLabel("");
-		lbl_UpdateMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_UpdateMessage.setBounds(160, 348, 123, 14);
-		this.add(lbl_UpdateMessage);
+		btnUpdate.setBounds(160, 331, 117, 29);
+		this.add(btnUpdate);
 	}
 }
