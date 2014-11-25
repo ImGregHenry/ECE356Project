@@ -14,7 +14,7 @@ public class MainTabPage {
 
 	private User loginUser;
 	private JFrame frmProject;
-	private Login.LoginAccessLevel accessLevel = Login.LoginAccessLevel.NONE;
+	
 
 	/**
 	 * Create the application.
@@ -49,30 +49,30 @@ public class MainTabPage {
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
 			tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
+			tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));
+			tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
+
 		}
 		else if ( loginUser.accessLevel == Login.LoginAccessLevel.PATIENT)
 		{
-			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 			tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, loginUser));
+			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.ADMIN)
 		{
-			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
-			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
+//			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
+//			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.STAFF)
 		{
 			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
+			tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
+			tabbedPane.addTab("Schedule Appointment", new AppointmentPanel(loginUser));
 		}
-		tabbedPane.addTab("Finance", new FinanceTab(loginUser));
-
-		tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));
-		tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
-		tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
-		tabbedPane.addTab("Appointments", new AppointmentPanel(loginUser)); 
-		
-		//tabbedPane.addTab("Create Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.CREATE, -1));
-		//tabbedPane.addTab("Update Patient Info", new PatientInfoPanel(PatientInfoPanel.PatientLoadMode.UPDATE, 1));
+		else if(loginUser.accessLevel == Login.LoginAccessLevel.FINANCE)
+		{
+			tabbedPane.addTab("Finance", new FinanceTab(loginUser));
+		}
 
 		tabbedPane.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {

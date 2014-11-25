@@ -72,7 +72,7 @@ public class PatientInfoForStaff extends JPanel {
 		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and DoctorID: " + _user.DoctorID);
 		if(this.pageLoadMode == PatientLoadMode.STAFF)
 		{
-			PopulateStaffDoctorDropDown(_user.StaffID);
+			PopulateDoctorDoctorDropDown(_user.StaffID);
 		}
 		else if(this.pageLoadMode == PatientLoadMode.DOCTOR)
 		{
@@ -121,31 +121,22 @@ public class PatientInfoForStaff extends JPanel {
 	}
 	
 	
-	private void PopulateStaffDoctorDropDown(String staffID)
+	private void PopulateDoctorDoctorDropDown(String id)
 	{
 		try {
 			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo(staffID);
-			
-			while(rs.next())
-			{  
-				String doctorName = rs.getObject("FirstName") + " " + rs.getObject("LastName"); 
-				comboBox_Doctor.addItem(new CustomComboBoxItem(rs.getObject("DoctorID").toString(), doctorName));
+			ResultSet rs;
+			if(this.pageLoadMode == PatientLoadMode.STAFF)
+			{
+				rs = dbQuery.Staff_GetAllDoctorInfo(id);
 			}
+			else if(this.pageLoadMode == PatientLoadMode.DOCTOR)
+			{
+				rs = dbQuery.Doctor_GetDoctorList(id);
+			}
+			else
+				return;
 			
-			System.out.println("Doctor Filter List Loaded.");
-		}
-		catch (SQLException e) {
-			System.out.println("Erorr loading doctor filter list.");
-			e.printStackTrace();
-		}
-	}
-	
-	private void PopulateDoctorDoctorDropDown(String doctorID)
-	{
-		try {
-			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo(doctorID);
 			
 			while(rs.next())
 			{  
@@ -178,11 +169,10 @@ public class PatientInfoForStaff extends JPanel {
 		ResetPatientTable();
 		
 		CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_Doctor.getSelectedItem();
+		
+
 		ResultSet rs = dbQuery.GetPatientList(selectedDoctor.getID());
-		
-		
-		//System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
-		
+
 		Object[] row = new Object[TABLE_COLUMN_COUNT];
 		try {
 			while(rs.next())
@@ -194,7 +184,7 @@ public class PatientInfoForStaff extends JPanel {
 			    System.out.println(table_Patients.getModel().getRowCount());
 			    ((DefaultTableModel) table_Patients.getModel()).insertRow(rs.getRow()-1, row);
 			}
-			
+
 			//System.out.println("Successfully loaded doctor appointment table!");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -23,7 +23,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "password";
+			String connectionPassword = "Success100";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -199,10 +199,11 @@ public class dbQuery {
 	}
 	
 	public static ResultSet Doctor_GetDoctorList(String DoctorID) {
+		
 		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
 				+ "FROM Doctor d "
 				+ "INNER JOIN StaffDoctorAccess a ON a.DoctorIDSharingPatient = d.DoctorID "
-				+ "WHERE a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NULL";
+				+ "WHERE d.DoctorID = '" + DoctorID + "' OR (a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NOT NULL)";
 		
 		ResultSet rs = dbQuery.GetResultSet(query);
 
