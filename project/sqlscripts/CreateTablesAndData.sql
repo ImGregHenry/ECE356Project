@@ -163,7 +163,6 @@ CREATE TABLE VisitationRecord (
     ProcedureFee INT NOT NULL,  
     ProcedureName VARCHAR(100) NOT NULL,
     EnteredDate DATETIME NOT NULL,
-    PRIMARY KEY (AppointmentID),
     FOREIGN KEY (AppointmentID) REFERENCES Appointment (AppointmentID),
     FOREIGN KEY (ProcedureName) REFERENCES Medical (ProcedureName)
 );
