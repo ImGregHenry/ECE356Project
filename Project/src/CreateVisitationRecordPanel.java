@@ -46,6 +46,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 	String userId ="";
 	String entDate;
 	String doctorID;
+	String prescription;
 	User user;
 	String appID;
 	private JTextField txtPatient;
@@ -122,12 +123,22 @@ public class CreateVisitationRecordPanel extends JPanel {
 				
 				System.out.println(txt_ApptLength.getText().equals(appLength));
 				System.out.println(txtVReason.getText().equals(vReason));
+				
 				System.out.println(tfDocComm.getText().equals(dComments));
-				if (procItem.getID().equals("-1"))
+				if (procItem.getID().equals("-1") || procItem.getName().substring(0,procItem.getName().indexOf(" - ")).equals(""))
 				{
 					JOptionPane.showMessageDialog(null,"Please select the procedure");
 					return;
 				}
+				
+				if (!dbQuery.check_visitationRecent(appID,entDate))
+				{
+					JOptionPane.showMessageDialog(null,"Your data seems to be outdated, Refreshing. Please resubmit after reset");
+					Refresh();
+					
+					return;
+				}
+				
 				if(txt_ApptLength.getText().equals(appLength) && txtVReason.getText().equals(vReason) && tfDocComm.getText().equals(dComments) &&
 						procItem.getName().equals(procName))
 				{
@@ -139,14 +150,8 @@ public class CreateVisitationRecordPanel extends JPanel {
 				dbQuery.Visitation_UpdateAppointmentRecord(txt_ApptLength.getText(),appID,doctorID);
 				dbQuery.Visitation_InsertVisitationRecord(appID,tfDocComm.getText(),txtVReason.getText(),
 						procItem.getID(), procItem.getName().substring(0,procItem.getName().indexOf(" - ")));
-				
-				appLength = txt_ApptLength.getText(); 
-				vReason = txtVReason.getText();
-				dComments = tfDocComm.getText();
-				procFee = procItem.getID();
-				procName = procItem.getName();
-				
-				fillTable(selectedDoctor.getID(), selectedPatient.getID());		
+			
+				Refresh();	
 			}
 		});
 		btnCreateupdate.setBounds(835, 564, 132, 23);
@@ -196,7 +201,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		txt_ApptLength.setColumns(10);
 
 		String col[] = new String[] { "Visitation Date", "Visitation Length", "Doctor", "Patient","Doctor's Comments", 
-				"Diagnosis", "Procedure Fee", "Procedure Name","Entered Date","Doctor ID","Appointment ID"};
+				"Diagnosis", "Procedure Fee", "Procedure Name","Entered Date","Doctor ID","Appointment ID","Prescription"};
 
 		DefaultTableModel model = new DefaultTableModel(col, 0);
 		
@@ -228,6 +233,8 @@ public class CreateVisitationRecordPanel extends JPanel {
 		table_VisitationRecord.getColumnModel().getColumn(9).setPreferredWidth(0);
 		table_VisitationRecord.getColumnModel().getColumn(10).setMinWidth(0);
 		table_VisitationRecord.getColumnModel().getColumn(10).setMaxWidth(0);
+		table_VisitationRecord.getColumnModel().getColumn(11).setMinWidth(0);
+		table_VisitationRecord.getColumnModel().getColumn(11).setMaxWidth(0);
 		table_VisitationRecord.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table_VisitationRecord.setBounds(300, 100, 100, 100);
 		
@@ -277,7 +284,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 				 entDate =  table_VisitationRecord.getModel().getValueAt(row, 8).toString();
 				 appID = table_VisitationRecord.getModel().getValueAt(row, 9).toString();
 				 doctorID = table_VisitationRecord.getModel().getValueAt(row, 10).toString();
-				
+				 procName += " - " + table_VisitationRecord.getModel().getValueAt(row, 11).toString();
 				
 				txtApptDate.setText(appDate);
 				
@@ -308,7 +315,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		((DefaultTableModel) table_VisitationRecord.getModel()).setRowCount(0);
 		//ResultSet rs = dbQuery.Patient_GetPatientVisitationRecord(patientID);
 		ResultSet rs = dbQuery.Visitation_getAllVisits(doctorId, patientId, userId);
-		int columns = 11;
+		int columns = 12;
 		
 		Object[] row = new Object[columns];
 		
@@ -326,6 +333,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 			    row[8] = rs.getObject("EnteredDate");
 			    row[9] = rs.getObject("AppointmentID");
 			    row[10] = rs.getObject("DoctorID");
+			    row[11] = rs.getObject("Prescription");
 			    
 			    ((DefaultTableModel) table_VisitationRecord.getModel()).insertRow(rs.getRow()-1, row);
 			}
@@ -400,5 +408,37 @@ public class CreateVisitationRecordPanel extends JPanel {
 		{
 			System.out.println("Error loading Procedure filter list.");
 		}
+	}
+	private void Refresh()
+	{
+		 appDate =  "";
+		 appLength =  "";
+		 doctor =  "";
+		 patient = "";
+		 dComments = "";
+		 vReason = "";
+		 procFee = "";
+		 procName =  "";
+		 entDate =  "";
+		 appID = "";
+		 doctorID = "";
+		prescription = "";
+		
+		txtApptDate.setText("");
+		
+		System.out.println("CurrentDoctor: "+doctorID+" currentAppointment: "+appID);
+		txtDoctorName.setText("");
+		txtPatient.setText("");
+
+		txt_ApptLength.setText("");
+		txtVReason.setText("");
+		comboBox_Procedures.getModel().setSelectedItem(new CustomComboBoxItem("-1",""));
+		comboBox_Procedures.requestFocus();
+		comboBox_Procedures.requestFocusInWindow();
+		tfDocComm.setText("");
+		
+		System.out.println(appDate + " "+ doctor);
+		
+		fillTable(selectedDoctor.getID(), selectedPatient.getID());
 	}
 }
