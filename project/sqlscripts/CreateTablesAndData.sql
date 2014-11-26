@@ -201,7 +201,6 @@ CREATE TABLE Appointment (
 
 INSERT INTO Appointment (DoctorID, StaffID, PatientID, AppointmentDate, AppointmentLength)
 VALUES  ('1', '2', '1', '2014-11-02 09:00:00', '04:20:00'),
-('1', '2', '1', '2014-11-04 12:20:00', '00:30:00'),
 ('2', '2', '2', '2014-10-03 07:30:00', '04:45:00'),
 ('1', '2', '3', '2014-01-12 14:00:00', '02:15:00'),
 ('2', '2', '4', '2014-04-20 03:10:00', '01:00:00'),
@@ -210,7 +209,12 @@ VALUES  ('1', '2', '1', '2014-11-02 09:00:00', '04:20:00'),
 ('5', '6', '7', '2014-07-08 13:25:00', '01:20:00'),
 ('1', '2', '8', '2014-09-15 16:40:00', '02:00:00'),
 ('5', '6', '9', '2014-04-01 19:50:00', '00:45:00'),
-('6', '7', '10', '2014-11-25 11:10:00', '03:06:00');
+('1', '2', '1', '2014-12-01 09:15:00', '02:00:00'),
+('1', '2', '3', '2014-12-15 10:30:00', '00:50:00'),
+('1', '2', '3', '2015-01-05 13:40:00', '00:30:00'),
+('2', '2', '4', '2014-11-30 14:25:00', '01:05:00'),
+('2', '4', '4', '2014-12-19 08:20:00', '02:30:00'),
+('5', '6', '9', '2014-12-16 14:50:00', '02:15:00');
 -- 'YYYY-MM-DD HH:MM:SS'
 -- 'HH:MM:SS'
 
@@ -230,12 +234,12 @@ CREATE TABLE VisitationRecord (
 
 INSERT INTO VisitationRecord (AppointmentID, DoctorComment, VisitReason, ProcedureFee, ProcedureName, EnteredDate)
 VALUES (1, 'What a visit that was.  Amazing patient.', 'Strictly business', 50, 'Consultation', '2014-11-02 02:00:00' ),
-(2, 'Things got prickly.', 'Acupunture Session', 80, 'Acupuncture','2014-11-04 13:00:00'),
-(3, 'Lots of brain matter', 'Brain Surgery', 30000, 'Craniotomy','2014-10-03 13:30:27'),
-(4, 'Blocked colon', 'Bowel Problems', 500, 'Colonoscopy','2014-01-12 16:30:00'),
-(5, 'Hairline fracture in wrist', 'Tripped on dogs', 500, 'X-Ray','2014-04-20 17:00:16'),
-(6, 'Anemic', 'Fainting and always tired', 100, 'Blood Test','2014-08-29 16:00:02'),
-(7, 'Right foot could not be saved', 'Car Accident', 15000, 'Amputation','2014-03-31 19:02:00'),
-(8, 'Still on wait list for new kidney', 'Kidney failure', 1500, 'Dialysis','2014-07-03 17:13:40'),
-(9, 'Fetus looks healthy', 'Pregnant second trimester checkup', 1000, 'Ultrasound','2014-09-15 18:22:30'),
+(2, 'Lots of brain matter', 'Brain Surgery', 30000, 'Craniotomy','2014-10-03 13:30:27'),
+(3, 'Blocked colon', 'Bowel Problems', 500, 'Colonoscopy','2014-01-12 16:30:00'),
+(4, 'Hairline fracture in wrist', 'Tripped on dogs', 500, 'X-Ray','2014-04-20 17:00:16'),
+(5, 'Anemic', 'Fainting and always tired', 100, 'Blood Test','2014-08-29 16:00:02'),
+(6, 'Right foot could not be saved', 'Car Accident', 15000, 'Amputation','2014-03-31 19:02:00'),
+(7, 'Still on wait list for new kidney', 'Kidney failure', 1500, 'Dialysis','2014-07-08 17:13:40'),
+(8, 'Fetus looks healthy', 'Pregnant second trimester checkup', 1000, 'Ultrasound','2014-09-15 18:22:30'),
+(9, 'Things got prickly.', 'Acupunture Session', 80, 'Acupuncture','2014-04-02 20:59:04'),
 (10, '3 arterial blocks', 'Heart Attack', 25000, 'Heart Bypass Surgery','2014-11-25 15:42:55');
