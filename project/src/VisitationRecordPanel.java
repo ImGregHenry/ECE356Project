@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,11 +47,13 @@ public class VisitationRecordPanel extends JPanel {
 	private JComboBox<CustomComboBoxItem> comboBox_ScheduleDoctor;
 	CustomComboBoxItem selectedDoctor = new CustomComboBoxItem("-1","");
 	User login;
+	private JLabel lblCorrespondingVisitationRecords;
 	/**
 	 * Create the panel.
 	 */
 	public VisitationRecordPanel(User loginUser) 
 	{
+
 		login = loginUser;
 		type = login.accessLevel.toString();
 		if (login.accessLevel == Login.LoginAccessLevel.PATIENT)
@@ -159,7 +162,19 @@ public class VisitationRecordPanel extends JPanel {
 			}
 			
 		};
+		String startDateString = "2014-01-01";
+		String endDateString = "2014-12-30";
 		
+		try{
+			Date startdate = sdfDate.parse(startDateString);
+			Date endDate = sdfDate.parse(endDateString);
+			calendar_fromAppt.setDate(startdate);
+			calendar_toAppt.setDate(endDate);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		calendar_fromAppt.addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent arg0) {
 				// TODO Auto-generated method stub
@@ -228,6 +243,11 @@ public class VisitationRecordPanel extends JPanel {
 		JLabel lblDoctor = new JLabel("Doctor");
 		lblDoctor.setBounds(494, 44, 68, 20);
 		add(lblDoctor);
+		
+		lblCorrespondingVisitationRecords = new JLabel("Corresponding Visitation Records");
+		lblCorrespondingVisitationRecords.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCorrespondingVisitationRecords.setBounds(800, 128, 900, 50);
+		add(lblCorrespondingVisitationRecords);
 		
 		
 	}
