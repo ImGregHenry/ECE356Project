@@ -138,7 +138,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 				
 				dbQuery.Visitation_UpdateAppointmentRecord(txt_ApptLength.getText(),appID,doctorID);
 				dbQuery.Visitation_InsertVisitationRecord(appID,tfDocComm.getText(),txtVReason.getText(),
-						procItem.getID(), procItem.getName().substring(0,procItem.getName().indexOf(" ")));
+						procItem.getID(), procItem.getName().substring(0,procItem.getName().indexOf(" - ")));
 				
 				appLength = txt_ApptLength.getText(); 
 				vReason = txtVReason.getText();

@@ -23,7 +23,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "Success100";
+			String connectionPassword = "password";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -726,7 +726,7 @@ public class dbQuery {
 			query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
 					+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(v.DoctorComment,'') AS DoctorComment,"
 					+ " IFNULL(v.VisitReason,'') AS VisitReason, IFNULL(v.ProcedureFee,'') AS ProcedureFee, IFNULL(v.ProcedureName,'') AS ProcedureName, "
-					+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, a.AppointmentID, a.DoctorID FROM appointment a "
+					+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, v.AppointmentID, a.DoctorID FROM appointment a "
 					+ "LEFT JOIN visitationrecord v ON a.AppointmentID = v.AppointmentID "
 					+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID LEFT JOIN patient p ON a.PatientID = p.PatientID ";
 					if (!userId.equals("")) 
