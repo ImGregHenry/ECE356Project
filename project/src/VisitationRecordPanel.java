@@ -94,7 +94,7 @@ public class VisitationRecordPanel extends JPanel {
 		setLayout(null);
 		
 		JScrollPane scrollPaneAppointment = new JScrollPane();
-		scrollPaneAppointment.setBounds(37, 189, 579, 330);
+		scrollPaneAppointment.setBounds(37, 189, 680, 330);
 		this.add(scrollPaneAppointment);
 		
 		comboBox_ScheduleDoctor = new JComboBox<CustomComboBoxItem>();
@@ -123,8 +123,8 @@ public class VisitationRecordPanel extends JPanel {
 		
 		table_AppointmentRecord.getColumnModel().getColumn(0).setPreferredWidth(145);
 		table_AppointmentRecord.getColumnModel().getColumn(1).setPreferredWidth(130);
-		table_AppointmentRecord.getColumnModel().getColumn(2).setPreferredWidth(100);
-		table_AppointmentRecord.getColumnModel().getColumn(3).setPreferredWidth(100);
+		table_AppointmentRecord.getColumnModel().getColumn(2).setPreferredWidth(200);
+		table_AppointmentRecord.getColumnModel().getColumn(3).setPreferredWidth(200);
 		table_AppointmentRecord.getColumnModel().getColumn(4).setPreferredWidth(0);
 		table_AppointmentRecord.getColumnModel().getColumn(4).setMinWidth(0);
 		table_AppointmentRecord.getColumnModel().getColumn(4).setMaxWidth(0);
@@ -144,7 +144,7 @@ public class VisitationRecordPanel extends JPanel {
 		add(calendar_toAppt);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(678, 189, 579, 330);
+		scrollPane.setBounds(800, 189, 900, 330);
 		this.add(scrollPane);
 
 		table_VisitationRecord = new JTable(model) 

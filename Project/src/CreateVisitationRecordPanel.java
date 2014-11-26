@@ -6,6 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ import com.toedter.calendar.JCalendar;
 public class CreateVisitationRecordPanel extends JPanel {
 	private JTextField txtVReason;
 	private JTextField txt_ApptLength;
-	private TextField tfDocComm;
+	private JTextArea tfDocComm;
 	private JTable table_VisitationRecord;
 	private JComboBox<CustomComboBoxItem> comboBox_SchedulePatient;
 	private JComboBox<CustomComboBoxItem> comboBox_ScheduleDoctor;
@@ -64,7 +65,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 				Refresh();
 			}
 		});	
-		btn_Refresh.setBounds(1050, 11, 35, 35);
+		btn_Refresh.setBounds(20, 11, 35, 35);
 		this.add(btn_Refresh);
 		
 		user = login;
@@ -72,11 +73,11 @@ public class CreateVisitationRecordPanel extends JPanel {
 		userId = login.DoctorID;
 		
 		comboBox_Procedures = new JComboBox<CustomComboBoxItem>();
-		comboBox_Procedures.setBounds(793, 329, 269, 36);
+		comboBox_Procedures.setBounds(994, 344, 269, 36);
 		this.add(comboBox_Procedures);
 		
 		comboBox_SchedulePatient = new JComboBox<CustomComboBoxItem>();
-		comboBox_SchedulePatient.setBounds(286, 40, 173, 36);
+		comboBox_SchedulePatient.setBounds(381, 38, 173, 36);
 		
 		comboBox_SchedulePatient.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
@@ -92,7 +93,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		this.add(comboBox_SchedulePatient);
 		
 		comboBox_ScheduleDoctor = new JComboBox<CustomComboBoxItem>();
-		comboBox_ScheduleDoctor.setBounds(58, 40, 173, 36);
+		comboBox_ScheduleDoctor.setBounds(153, 38, 173, 36);
 		
 		comboBox_ScheduleDoctor.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
@@ -115,7 +116,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 87, 758, 405);
+		scrollPane.setBounds(10, 87, 900, 405);
 		add(scrollPane);
 		
 		JButton btnCreateupdate = new JButton("Create/Update");
@@ -163,52 +164,55 @@ public class CreateVisitationRecordPanel extends JPanel {
 				dbQuery.Visitation_InsertVisitationRecord(appID,tfDocComm.getText(),txtVReason.getText(),
 						procItem.getID(), procItem.getName().substring(0,procItem.getName().indexOf(" - ")));
 			
-				Refresh();	
+				JOptionPane.showMessageDialog(null,"Successfully entered new visitation record.");
+
+				Refresh();
 			}
 		});
-		btnCreateupdate.setBounds(835, 564, 132, 23);
+		btnCreateupdate.setBounds(835, 630, 132, 23);
 		add(btnCreateupdate);
 		
 		JLabel lblAppointmentDate = new JLabel("Appointment Date");
-		lblAppointmentDate.setBounds(793, 117, 143, 23);
+		lblAppointmentDate.setBounds(965, 116, 143, 23);
 		add(lblAppointmentDate);
 		
 		JLabel lblAppointmentLength = new JLabel("Appointment Length");
-		lblAppointmentLength.setBounds(793, 219, 143, 14);
+		lblAppointmentLength.setBounds(965, 218, 143, 14);
 		add(lblAppointmentLength);
 		
 		JLabel lblDoctorFilterName = new JLabel("Doctor");
-		lblDoctorFilterName.setBounds(10, 51, 38, 14);
+		lblDoctorFilterName.setBounds(105, 49, 38, 14);
 		add(lblDoctorFilterName);
 		
 		JLabel lblPatientFilterName = new JLabel("Patient");
-		lblPatientFilterName.setBounds(241, 51, 45, 14);
+		lblPatientFilterName.setBounds(336, 49, 45, 14);
 		add(lblPatientFilterName);
 		
 		JLabel lblVisitReason = new JLabel("Diagnosis");
-		lblVisitReason.setBounds(793, 260, 143, 14);
+		lblVisitReason.setBounds(1019, 259, 143, 14);
 		add(lblVisitReason);
 		
 		JLabel lblProcedureName = new JLabel("Procedure - Prescription Name");
-		lblProcedureName.setBounds(793, 300, 269, 25);
+		lblProcedureName.setBounds(1004, 306, 269, 25);
 		add(lblProcedureName);
 		
 		JLabel lblDoctorsComment = new JLabel("Doctor's Comment");
-		lblDoctorsComment.setBounds(793, 443, 143, 14);
+		lblDoctorsComment.setBounds(850, 525, 143, 14);
 		add(lblDoctorsComment);
 		
-		tfDocComm = new TextField();
-		tfDocComm.setBounds(942, 443, 206, 103);
+		tfDocComm = new JTextArea();
+		tfDocComm.setBounds(992, 521, 206, 103);
+		tfDocComm.setLineWrap(true);
 		add(tfDocComm);
 
 		
 		txtVReason = new JTextField();
-		txtVReason.setBounds(942, 257, 143, 20);
+		txtVReason.setBounds(1120, 256, 143, 20);
 		add(txtVReason);
 		txtVReason.setColumns(10);
 		
 		txt_ApptLength = new JTextField();
-		txt_ApptLength.setBounds(942, 216, 143, 20);
+		txt_ApptLength.setBounds(1120, 215, 143, 20);
 		add(txt_ApptLength);
 		txt_ApptLength.setColumns(10);
 
@@ -253,28 +257,28 @@ public class CreateVisitationRecordPanel extends JPanel {
 		table_VisitationRecord.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JLabel lblDoctor = new JLabel("Doctor");
-		lblDoctor.setBounds(793, 154, 103, 23);
+		lblDoctor.setBounds(1033, 152, 103, 23);
 		add(lblDoctor);
 		
 		JLabel lblPatient = new JLabel("Patient");
-		lblPatient.setBounds(793, 188, 103, 17);
+		lblPatient.setBounds(1033, 185, 103, 17);
 		add(lblPatient);
 		
 		txtApptDate = new JTextField();
 		txtApptDate.setEnabled(false);
-		txtApptDate.setBounds(942, 118, 143, 20);
+		txtApptDate.setBounds(1120, 117, 143, 20);
 		add(txtApptDate);
 		txtApptDate.setColumns(10);
 		
 		txtDoctorName = new JTextField();
 		txtDoctorName.setEnabled(false);
-		txtDoctorName.setBounds(942, 153, 143, 20);
+		txtDoctorName.setBounds(1120, 152, 143, 20);
 		add(txtDoctorName);
 		txtDoctorName.setColumns(10);
 		
 		txtPatient = new JTextField();
 		txtPatient.setEnabled(false);
-		txtPatient.setBounds(942, 185, 143, 20);
+		txtPatient.setBounds(1120, 184, 143, 20);
 		add(txtPatient);
 		txtPatient.setColumns(10);
 		

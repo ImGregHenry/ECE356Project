@@ -81,7 +81,7 @@ public class DoctorViewPatientListAndRecords extends JPanel {
 	private void PopulatePatientTable()
 	{
 		ResetPatientTable();
-		
+		ResetVRTable();
 			
 		ResultSet rs = dbQuery.Doctor_GetPatientList(this.user.DoctorID, txt_FirstName.getText(),
 				txt_LastName.getText(), 
