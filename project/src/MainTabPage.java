@@ -51,7 +51,7 @@ public class MainTabPage {
 			tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
 			tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));
 			tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
-
+			tabbedPane.addTab("View My Appointments", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.DOCTOR, loginUser));
 		}
 		else if ( loginUser.accessLevel == Login.LoginAccessLevel.PATIENT)
 		{
@@ -67,7 +67,7 @@ public class MainTabPage {
 		{
 			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
 			tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
-			tabbedPane.addTab("Schedule Appointment", new AppointmentPanel(loginUser));
+			tabbedPane.addTab("Schedule Appointment", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.STAFF, loginUser));
 		}
 		else if(loginUser.accessLevel == Login.LoginAccessLevel.FINANCE)
 		{

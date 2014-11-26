@@ -43,6 +43,10 @@ public class AppointmentPanel extends JPanel {
 	
 
 
+	public static enum AppointmentLoadMode {
+		STAFF, DOCTOR
+	}
+
 	private JTable table_Appointments;
 	private JComboBox<CustomComboBoxItem> comboBox_ScheduleDoctor;
 	private JComboBox<CustomComboBoxItem> comboBox_ApptTableDoctorSelect;
@@ -52,16 +56,28 @@ public class AppointmentPanel extends JPanel {
 	private JCalendar calendar_Appt;
 	private boolean isDoctorComboBoxLoaded = false;
 	private User user;
-
+	private AppointmentLoadMode pageMode;
 	/**
 	 * Create the application.
 	 */
-	public AppointmentPanel(User _user) {
+	public AppointmentPanel(AppointmentLoadMode _mode, User _user) {
 		this.user = _user;
+		this.pageMode = _mode;
 		initialize();
 
-		PopulatePatientDropDown();
-		PopulateDoctorDropDown(this.user.StaffID);
+		
+		if(this.pageMode == AppointmentLoadMode.DOCTOR)
+		{
+			String doctorName = _user.DoctorFirstName + " " + _user.DoctorLastName; 
+			comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem(_user.DoctorID, doctorName));
+		}
+		// Staff
+		else
+		{
+			PopulatePatientDropDown();
+			PopulateDoctorDropDown(this.user.StaffID);
+		}
+		
 		isDoctorComboBoxLoaded = true;	//NOTE: keep this flag set after PopulateDoctorDropDown() method, IMPORTANT!
 		PopulateAppointmentTable();
 		
@@ -227,29 +243,11 @@ public class AppointmentPanel extends JPanel {
 		//frame.getContentPane().add(table_VisitationRecord);
 		scrollPane.setViewportView(table_Appointments);
 		
-		calendar_Appt = new JCalendar();
-		calendar_Appt.setBounds(244, 543, 198, 153);
-		this.add(calendar_Appt);
 		
 		lbl_BookApptMessage = new JLabel("");
 		lbl_BookApptMessage.setFont(new Font("Calibri", Font.BOLD, 15));
 		lbl_BookApptMessage.setBounds(752, 666, 304, 30);
 		this.add(lbl_BookApptMessage);
-		
-		JLabel lblPatient = new JLabel("Patient");
-		lblPatient.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblPatient.setBounds(10, 617, 119, 20);
-		this.add(lblPatient);
-		
-		comboBox_SchedulePatient = new JComboBox<CustomComboBoxItem>();
-		comboBox_SchedulePatient.setBounds(10, 644, 173, 36);
-		this.add(comboBox_SchedulePatient);
-		
-		
-		JLabel lblDoctorsSchedule = new JLabel("Doctor's Schedule:");
-		lblDoctorsSchedule.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDoctorsSchedule.setBounds(116, 23, 133, 14);
-		this.add(lblDoctorsSchedule);
 		
 		comboBox_ApptTableDoctorSelect = new JComboBox<CustomComboBoxItem>();
 		comboBox_ApptTableDoctorSelect.addItemListener(new ItemListener() {
@@ -265,156 +263,179 @@ public class AppointmentPanel extends JPanel {
 		comboBox_ApptTableDoctorSelect.setBounds(280, 20, 133, 20);
 		this.add(comboBox_ApptTableDoctorSelect);
 		
-		
-		final JSpinner spinner_Time = new JSpinner( new SpinnerDateModel() );
-		spinner_Time.setFont(new Font("Calibri", Font.PLAIN, 24));
-		JSpinner.DateEditor de_spinner_Time = new JSpinner.DateEditor(spinner_Time, "HH:mm");
-		spinner_Time.setBounds(487, 619, 92, 36);
-		spinner_Time.setEditor(de_spinner_Time);
-		spinner_Time.setValue(new Date()); // will only show the current time
-		this.add(spinner_Time);
-		
-		JLabel lblHhmm = new JLabel("HH:mm");
-		lblHhmm.setBounds(507, 666, 70, 14);
-		this.add(lblHhmm);
-		
-		JLabel lblNewLabel = new JLabel("Time");
-		lblNewLabel.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblNewLabel.setBounds(487, 588, 49, 20);
-		this.add(lblNewLabel);
-		
-		final JLabel lblscheduleNewAppointment = new JLabel("--Schedule New Appointment --");
-		lblscheduleNewAppointment.setFont(new Font("Calibri", Font.BOLD, 24));
-		lblscheduleNewAppointment.setBounds(305, 496, 331, 36);
-		this.add(lblscheduleNewAppointment);
-		
-		JLabel lblLength = new JLabel("Length");
-		lblLength.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblLength.setBounds(648, 588, 70, 20);
-		this.add(lblLength);
-		
-		final JSpinner spinner_Length = new JSpinner( new SpinnerNumberModel(30, 0, 600, 5) );
-		JSpinner.NumberEditor de_spinner_Length = new JSpinner.NumberEditor(spinner_Length);
-		spinner_Length.setFont(new Font("Calibri", Font.PLAIN, 24));
-		spinner_Length.setBounds(648, 619, 92, 36);
-		spinner_Length.setEditor(de_spinner_Length);
-		this.add(spinner_Length);
-		
 
-		final JLabel lblCancelApptMsg = new JLabel("");
-		lblCancelApptMsg.setFont(new Font("Calibri", Font.BOLD, 14));
-		lblCancelApptMsg.setBounds(688, 23, 180, 14);
-		add(lblCancelApptMsg);
-		
-		JLabel lblmins = new JLabel("(mins)");
-		lblmins.setBounds(671, 666, 70, 14);
-		this.add(lblmins);
-		
-		JButton btnNewButton = new JButton("Book Appointment");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				SimpleDateFormat sdfFullDateTime = new SimpleDateFormat("MMM:dd:yyyy HH:mm:ss");
-				
-				SimpleDateFormat sdfDate = new SimpleDateFormat("MMM:dd:yyyy");
-				SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
-				Date startDate;
-				Date endDate;
-				
-				CustomComboBoxItem selectedPatient = (CustomComboBoxItem)comboBox_SchedulePatient.getSelectedItem();
-				CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_ScheduleDoctor.getSelectedItem();
-				//System.out.println("SelectedPatientID: " + selectedPatient.getID() + " Patient Name: " + selectedPatient.getName());
-				//System.out.println("SelectedDoctorID: " + selectedDoctor.getID() + " Doctor Name: " + selectedDoctor.getName());
-				
-				String startDateString = sdfDate.format(calendar_Appt.getDate());
-				String startTimeString = sdfTime.format(spinner_Time.getValue()) + ":00";
-				//int apptLength = (int) spinner_Length.getValue();
-				int apptLength = 1;	
-				try {
-					// Calculate start date of appt by merging the date and time
-					String combinedDateTimeString = startDateString + " " + startTimeString; 
-					startDate = sdfFullDateTime.parse(combinedDateTimeString);
+		///////////////////////////////////// HIDE ALL OF THESE FROM DOCTOR
+		if(this.pageMode != AppointmentLoadMode.DOCTOR)
+		{
+			calendar_Appt = new JCalendar();
+			calendar_Appt.setBounds(244, 543, 198, 153);
+			this.add(calendar_Appt);
+			
+			JLabel lblPatient = new JLabel("Patient");
+			lblPatient.setFont(new Font("Calibri", Font.BOLD, 20));
+			lblPatient.setBounds(10, 617, 119, 20);
+			this.add(lblPatient);
+			
+			comboBox_SchedulePatient = new JComboBox<CustomComboBoxItem>();
+			comboBox_SchedulePatient.setBounds(10, 644, 173, 36);
+			this.add(comboBox_SchedulePatient);
+			
+			
+			JLabel lblDoctorsSchedule = new JLabel("Doctor's Schedule:");
+			lblDoctorsSchedule.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblDoctorsSchedule.setBounds(116, 23, 133, 14);
+			this.add(lblDoctorsSchedule);
+			
+			
+			final JSpinner spinner_Time = new JSpinner( new SpinnerDateModel() );
+			spinner_Time.setFont(new Font("Calibri", Font.PLAIN, 24));
+			JSpinner.DateEditor de_spinner_Time = new JSpinner.DateEditor(spinner_Time, "HH:mm");
+			spinner_Time.setBounds(487, 619, 92, 36);
+			spinner_Time.setEditor(de_spinner_Time);
+			spinner_Time.setValue(new Date()); // will only show the current time
+			this.add(spinner_Time);
+			
+			JLabel lblHhmm = new JLabel("HH:mm");
+			lblHhmm.setBounds(507, 666, 70, 14);
+			this.add(lblHhmm);
+			
+			JLabel lblNewLabel = new JLabel("Time");
+			lblNewLabel.setFont(new Font("Calibri", Font.BOLD, 20));
+			lblNewLabel.setBounds(487, 588, 49, 20);
+			this.add(lblNewLabel);
+			
+			final JLabel lblscheduleNewAppointment = new JLabel("--Schedule New Appointment --");
+			lblscheduleNewAppointment.setFont(new Font("Calibri", Font.BOLD, 24));
+			lblscheduleNewAppointment.setBounds(305, 496, 331, 36);
+			this.add(lblscheduleNewAppointment);
+			
+			JLabel lblLength = new JLabel("Length");
+			lblLength.setFont(new Font("Calibri", Font.BOLD, 20));
+			lblLength.setBounds(648, 588, 70, 20);
+			this.add(lblLength);
+			
+			final JSpinner spinner_Length = new JSpinner( new SpinnerNumberModel(30, 0, 600, 5) );
+			JSpinner.NumberEditor de_spinner_Length = new JSpinner.NumberEditor(spinner_Length);
+			spinner_Length.setFont(new Font("Calibri", Font.PLAIN, 24));
+			spinner_Length.setBounds(648, 619, 92, 36);
+			spinner_Length.setEditor(de_spinner_Length);
+			this.add(spinner_Length);
+			
+	
+			final JLabel lblCancelApptMsg = new JLabel("");
+			lblCancelApptMsg.setFont(new Font("Calibri", Font.BOLD, 14));
+			lblCancelApptMsg.setBounds(688, 23, 180, 14);
+			add(lblCancelApptMsg);
+			
+			JLabel lblmins = new JLabel("(mins)");
+			lblmins.setBounds(671, 666, 70, 14);
+			this.add(lblmins);
+			
+			JButton btnNewButton = new JButton("Book Appointment");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
 					
-					//System.out.println("CombinedDateTime: " + sdfFullDateTime.format(startDate));
+					SimpleDateFormat sdfFullDateTime = new SimpleDateFormat("MMM:dd:yyyy HH:mm:ss");
 					
-					// Calculate end date of appt (based on length of appt)
-					final long ONE_MINUTE_IN_MS=60000; 
-
-					long time = startDate.getTime();
-					endDate = new Date(time + (apptLength * ONE_MINUTE_IN_MS));
-					//System.out.println("EndDateTime: " + sdfFullDateTime.format(endDate));
+					SimpleDateFormat sdfDate = new SimpleDateFormat("MMM:dd:yyyy");
+					SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+					Date startDate;
+					Date endDate;
 					
+					CustomComboBoxItem selectedPatient = (CustomComboBoxItem)comboBox_SchedulePatient.getSelectedItem();
+					CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_ScheduleDoctor.getSelectedItem();
+					//System.out.println("SelectedPatientID: " + selectedPatient.getID() + " Patient Name: " + selectedPatient.getName());
+					//System.out.println("SelectedDoctorID: " + selectedDoctor.getID() + " Doctor Name: " + selectedDoctor.getName());
 					
-					// Test if appt is valid (in database)
-					boolean isApptAvailable = dbQuery.Staff_IsAppointmentAvailabile(selectedDoctor.getID(), selectedPatient.getID(), startDate, endDate);
+					String startDateString = sdfDate.format(calendar_Appt.getDate());
+					String startTimeString = sdfTime.format(spinner_Time.getValue()) + ":00";
+					//int apptLength = (int) spinner_Length.getValue();
+					int apptLength = 1;	
+					try {
+						// Calculate start date of appt by merging the date and time
+						String combinedDateTimeString = startDateString + " " + startTimeString; 
+						startDate = sdfFullDateTime.parse(combinedDateTimeString);
+						
+						//System.out.println("CombinedDateTime: " + sdfFullDateTime.format(startDate));
+						
+						// Calculate end date of appt (based on length of appt)
+						final long ONE_MINUTE_IN_MS=60000; 
+	
+						long time = startDate.getTime();
+						endDate = new Date(time + (apptLength * ONE_MINUTE_IN_MS));
+						//System.out.println("EndDateTime: " + sdfFullDateTime.format(endDate));
+						
+						
+						// Test if appt is valid (in database)
+						boolean isApptAvailable = dbQuery.Staff_IsAppointmentAvailabile(selectedDoctor.getID(), selectedPatient.getID(), startDate, endDate);
+						
+						if(isApptAvailable)
+						{
+							//System.out.println("Appointment is available!  Attempting to schedule.");
+							
+							
+							dbQuery.Staff_ScheduleDoctorAppointment(CreateTimeStringForApptLength(apptLength), user.StaffID, selectedPatient.getID(), selectedDoctor.getID(), dbQuery.dbDateFormat.format(startDate));
+							
+							// Reload the appointment table
+							PopulateAppointmentTable();
+							
+							lbl_BookApptMessage.setText("Successfully booked appointment.");
+						}
+						else
+						{
+							System.out.println("Failed to book appointment.  Try another time.");
+							lbl_BookApptMessage.setText("Failed to book appointment.  Invalid time.");
+						}
+						
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			});
+			
+			btnNewButton.setFont(new Font("Calibri", Font.BOLD, 16));
+			btnNewButton.setBounds(761, 619, 189, 36);
+			this.add(btnNewButton);
+			
+			comboBox_ScheduleDoctor = new JComboBox<CustomComboBoxItem>();
+			comboBox_ScheduleDoctor.setBounds(10, 543, 173, 36);
+			this.add(comboBox_ScheduleDoctor);
+			
+			JLabel lblDoctor = new JLabel("Doctor");
+			lblDoctor.setFont(new Font("Calibri", Font.BOLD, 20));
+			lblDoctor.setBounds(10, 516, 119, 20);
+			this.add(lblDoctor);
+			
+			btnCancelAppointment = new JButton("Cancel Appointment");
+			btnCancelAppointment.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
 					
-					if(isApptAvailable)
+					//System.out.println("CANDELETE: " + table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"));
+					//TODO: test whether can-delete column works.
+					if(table_Appointments.getSelectedRow() != -1
+							&& table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"))
 					{
-						//System.out.println("Appointment is available!  Attempting to schedule.");
+						Object appointmentID = table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_APPOINTMENT_ID_COLUMN_INDEX);
+		
+						//System.out.println("DELETING appoint for PatientID: " + appointmentID + " Row: " + table_Appointments.getSelectedRow() + " Col: " + TABLE_APPOINTMENT_ID_COLUMN_INDEX);
+						dbQuery.Staff_DeleteScheduledAppointment(appointmentID.toString());
+						//TODO: handle deleting appointments when they have a visitation record (don't delete)
 						
+						lblscheduleNewAppointment.setText("Successfully deleted appointment.");
 						
-						dbQuery.Staff_ScheduleDoctorAppointment(CreateTimeStringForApptLength(apptLength), user.StaffID, selectedPatient.getID(), selectedDoctor.getID(), dbQuery.dbDateFormat.format(startDate));
-						
-						// Reload the appointment table
 						PopulateAppointmentTable();
-						
-						lbl_BookApptMessage.setText("Successfully booked appointment.");
 					}
 					else
 					{
-						System.out.println("Failed to book appointment.  Try another time.");
-						lbl_BookApptMessage.setText("Failed to book appointment.  Invalid time.");
+						lblscheduleNewAppointment.setText("Error: Unable to delete this appointment.");
+						//TODO: error message, cannot delete because visitation record exists for this appointment
 					}
-					
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
-			}
-		});
-		
-		btnNewButton.setFont(new Font("Calibri", Font.BOLD, 16));
-		btnNewButton.setBounds(761, 619, 189, 36);
-		this.add(btnNewButton);
-		
-		comboBox_ScheduleDoctor = new JComboBox<CustomComboBoxItem>();
-		comboBox_ScheduleDoctor.setBounds(10, 543, 173, 36);
-		this.add(comboBox_ScheduleDoctor);
-		
-		JLabel lblDoctor = new JLabel("Doctor");
-		lblDoctor.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblDoctor.setBounds(10, 516, 119, 20);
-		this.add(lblDoctor);
-		
-		btnCancelAppointment = new JButton("Cancel Appointment");
-		btnCancelAppointment.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				//System.out.println("CANDELETE: " + table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"));
-				//TODO: test whether can-delete column works.
-				if(table_Appointments.getSelectedRow() != -1
-						&& table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_CAN_DELETE_COLUMN_INDEX).toString().equals("true"))
-				{
-					Object appointmentID = table_Appointments.getModel().getValueAt(table_Appointments.getSelectedRow(), TABLE_APPOINTMENT_ID_COLUMN_INDEX);
-	
-					//System.out.println("DELETING appoint for PatientID: " + appointmentID + " Row: " + table_Appointments.getSelectedRow() + " Col: " + TABLE_APPOINTMENT_ID_COLUMN_INDEX);
-					dbQuery.Staff_DeleteScheduledAppointment(appointmentID.toString());
-					//TODO: handle deleting appointments when they have a visitation record (don't delete)
-					
-					lblscheduleNewAppointment.setText("Successfully deleted appointment.");
-					
-					PopulateAppointmentTable();
-				}
-				else
-				{
-					lblscheduleNewAppointment.setText("Error: Unable to delete this appointment.");
-					//TODO: error message, cannot delete because visitation record exists for this appointment
-				}
-			}
-		});
-		btnCancelAppointment.setBounds(505, 19, 173, 23);
-		this.add(btnCancelAppointment);
-		
+			});
+			btnCancelAppointment.setBounds(505, 19, 173, 23);
+			this.add(btnCancelAppointment);
+		}
 	}
 	
 	
