@@ -162,8 +162,10 @@ public class VisitationRecordPanel extends JPanel {
 			}
 			
 		};
-		String startDateString = "2014-01-01";
-		String endDateString = "2014-12-30";
+		Calendar now = Calendar.getInstance();   // Gets the current date and time
+		int year = now.get(Calendar.YEAR);  
+		String startDateString = year+"-01-01";
+		String endDateString = year+"-12-31";
 		
 		try{
 			Date startdate = sdfDate.parse(startDateString);
