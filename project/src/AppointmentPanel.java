@@ -135,8 +135,8 @@ public class AppointmentPanel extends JPanel {
 				comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem(rs.getObject("DoctorID").toString(), doctorName));
 			}
 			
-			System.out.println("Doctor Appointment Filter List Loaded.");
-			System.out.println("Doctor Appointment Scheduler List Loaded.");
+//			System.out.println("Doctor Appointment Filter List Loaded.");
+//			System.out.println("Doctor Appointment Scheduler List Loaded.");
 		}
 		catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -161,7 +161,7 @@ public class AppointmentPanel extends JPanel {
 		ResetAppointmentTable();
 		
 		CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_ApptTableDoctorSelect.getSelectedItem();
-		ResultSet rs = dbQuery.Staff_GetFutureAppointmentInformation(selectedDoctor.getID());
+		ResultSet rs = dbQuery.Staff_GetFutureAppointmentInformation(this.pageMode, selectedDoctor.getID(), this.user.StaffID);
 		
 		
 		System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
