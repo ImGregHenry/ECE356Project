@@ -24,7 +24,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "password";
+			String connectionPassword = "Success100";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -856,7 +856,8 @@ public class dbQuery {
 					+ "inner join patient p on p.PatientID=a.PatientID "
 					+ "inner join doctor d on d.DoctorID=a.DoctorID "
 					+ "WHERE a.AppointmentDate > '" + dbDateFormat.format(startDate) + "' "
-					+ "AND a.AppointmentDate < '" + dbDateFormat.format(endDate) + "' ";
+					+ "AND a.AppointmentDate < '" + dbDateFormat.format(endDate) + "' "
+					+ "AND vr.EnteredDate IN (SELECT MAX(zz.EnteredDate) FROM VisitationRecord zz GROUP BY zz.AppointmentID) ";
 					
 		if(docID != "ALL")
 		{

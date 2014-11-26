@@ -67,6 +67,7 @@ public class FinanceTab extends JPanel{
 	private String tableFinanceDetailColumns[] = new String[] { "", "" };
 	private int FINANCE_MAIN_TABLE_COLUMN_COUNT = 7;
 	private int FINANCE_DETAILS_TABLE_COLUMN_COUNT = 2;
+	private JLabel lblNewLabel;
 	
 	public FinanceTab(User _user){
 		
@@ -191,6 +192,11 @@ public class FinanceTab extends JPanel{
 		JLabel lblTimeSpan = new JLabel("Time Span");
 		lblTimeSpan.setBounds(300, 277, 113, 16);
 		add(lblTimeSpan);
+		
+		lblNewLabel = new JLabel("Financial Information");
+		lblNewLabel.setFont(new Font("Calibri", Font.BOLD, 26));
+		lblNewLabel.setBounds(50, 28, 378, 36);
+		add(lblNewLabel);
 	}
 	
 
