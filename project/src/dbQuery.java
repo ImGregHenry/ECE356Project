@@ -616,6 +616,25 @@ public class dbQuery {
 	// **************************
 	// VisitationRecordPanel.java
 	// **************************
+
+	public ResultSet Doctor_GetFilteredVisitationRecordInfo(String patFirstName, String patLastName, String diagnosis, String prescrip, String procedure)
+	{
+		String query = "select *  "
+				+ "from appointment a "
+				+ "inner join visitationrecord vr on a.AppointmentID = vr.AppointmentID "
+				+ "INNER JOIN Patient p ON p.PatientID = a.PatientID "
+				+ "INNER JOIN Medical m ON m.ProcedureName = vr.ProcedureName "
+				+ "WHERE DoctorID = '1' "
+				+ "AND p.FirstName LIKE '%" + patFirstName + "%' "
+				+ "AND p.LastName LIKE '%" + patLastName + "%' "
+				+ "AND vr.VisitReason LIKE '%" + diagnosis + "%' "
+				+ "AND m.Prescription LIKE '%" + prescrip + "%' "
+				+ "AND vr.ProcedureName LIKE '%" + procedure+ "%'";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+		
+		return rs;
+	}
 	
 	public static ResultSet Visitation_getAppointments(String from, String to, String doctorId, String userId, String type)
 	{
@@ -852,4 +871,6 @@ public class dbQuery {
 		return rs;
 
 	}
+	
+	
 }
