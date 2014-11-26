@@ -653,6 +653,35 @@ public class dbQuery {
 	// VisitationRecordPanel.java
 	// **************************
 	
+	public static boolean check_visitationRecent(String appointmentId, String currDate)
+	{
+		String query = 	"SELECT MAX(EnteredDate) AS EnteredDate from "
+				+ "visitationrecord v WHERE AppointmentID = '"+appointmentId+"';";
+		
+		ResultSet rs = dbQuery.GetResultSet(query);
+		
+		String newDate = "";
+		try{
+			while(rs.next())
+			{
+			newDate = rs.getObject("EnteredDate").toString();
+			}
+			
+		}
+		catch(Exception e){}
+		if (newDate.equals(""))
+			return true;
+		
+		newDate = newDate.substring(0, newDate.indexOf("."));
+		
+		System.out.println(newDate);
+		System.out.println(currDate);
+		if (!newDate.equals(currDate))
+				return false;
+		
+		return true;
+	}
+	
 	public static ResultSet ViewVisitation_fillDoctorTable(String userId, String type)
 	{
 		String query ="";
@@ -666,6 +695,7 @@ public class dbQuery {
 		
 		return rs;
 	}
+	
 	
 	public static ResultSet Visitation_getAppointments(String from, String to, String doctorId, String userId, String type)
 	{
@@ -704,12 +734,13 @@ public class dbQuery {
 				+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(maxDate.DoctorComment,'') AS DoctorComment, "
 				+ "IFNULL( maxDate.VisitReason,'') AS VisitReason, IFNULL(maxDate.ProcedureFee, '') AS ProcedureFee, "
 				+ "IFNULL(maxDate.ProcedureName, '') AS ProcedureName, IFNULL(maxDate.EnteredDate,'') AS EnteredDate, "
-				+ "a.appointmentID,a.DoctorID from appointment a LEFT JOIN (SELECT appointmentID, DoctorComment, "
+				+ "a.appointmentID,a.DoctorID, IFNULL(m.Prescription,'') AS Prescription from appointment a LEFT JOIN (SELECT appointmentID, DoctorComment, "
 				+ "VisitReason, ProcedureFee, ProcedureName, EnteredDate from Visitationrecord v where EnteredDate = "
 				+ "(SELECT MAX(enteredDate) from visitationrecord v2 where v2.AppointmentID = v.AppointmentID) "
 				+ "group by v.AppointmentID) AS maxDate ON maxDate.appointmentID = a.appointmentID "
 				+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID "
-				+ "LEFT JOIN patient p ON a.PatientID = p.PatientID ";
+				+ "LEFT JOIN patient p ON a.PatientID = p.PatientID "
+				+ "LEFT JOIN medical m ON maxDate.ProcedureName = m.ProcedureName";
 		
 		String filterDoctors = " WHERE a.patientID IN(Select s.PatientID from staffdoctoraccess s WHERE s.PatientID IS NOT NULL "
 				+ "AND s.AssignedToDoctorID = '"+userId+"' AND s.AssignedToDoctorID IS NOT NULL "
@@ -741,7 +772,6 @@ public class dbQuery {
 			if (!userId.equals("")) query+=filterDoctors + "";
 		}
 		else {
-
 			if (!userId.equals("")) 
 				query+=filterDoctors + "AND a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"'"+" ";
 			else query+= "WHERE a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"' "+ " ";
