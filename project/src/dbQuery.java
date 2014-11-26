@@ -715,64 +715,51 @@ public class dbQuery {
 	
 	public static ResultSet Visitation_getAllVisits(String doctorId, String patientId, String userId)
 	{
-		String query = "";
+		String query = "SELECT a.appointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
+				+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(maxDate.DoctorComment,'') AS DoctorComment, "
+				+ "IFNULL( maxDate.VisitReason,'') AS VisitReason, IFNULL(maxDate.ProcedureFee, '') AS ProcedureFee, "
+				+ "IFNULL(maxDate.ProcedureName, '') AS ProcedureName, IFNULL(maxDate.EnteredDate,'') AS EnteredDate, "
+				+ "a.appointmentID,a.DoctorID from appointment a LEFT JOIN (SELECT appointmentID, DoctorComment, "
+				+ "VisitReason, ProcedureFee, ProcedureName, EnteredDate from Visitationrecord v where EnteredDate = "
+				+ "(SELECT MAX(enteredDate) from visitationrecord v2 where v2.AppointmentID = v.AppointmentID) "
+				+ "group by v.AppointmentID) AS maxDate ON maxDate.appointmentID = a.appointmentID "
+				+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID "
+				+ "LEFT JOIN patient p ON a.PatientID = p.PatientID ";
+		
 		String filterDoctors = " WHERE a.patientID IN(Select s.PatientID from staffdoctoraccess s WHERE s.PatientID IS NOT NULL "
 				+ "AND s.AssignedToDoctorID = '"+userId+"' AND s.AssignedToDoctorID IS NOT NULL "
 				+ " UNION ALL SELECT a.PatientID AS 'Patient'"
 					+ " FROM appointment a WHERE a.DoctorID = '"+userId+"') ";
 		
+		
 		if (doctorId.equals("-1") && !patientId.equals("-1"))
-		{
-			query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
-					+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(v.DoctorComment,'') AS DoctorComment,"
-					+ " IFNULL(v.VisitReason,'') AS VisitReason, IFNULL(v.ProcedureFee,'') AS ProcedureFee, IFNULL(v.ProcedureName,'') AS ProcedureName, "
-					+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, a.AppointmentID, a.DoctorID FROM appointment a "
-					+ "LEFT JOIN visitationrecord v ON a.AppointmentID = v.AppointmentID "
-					+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID LEFT JOIN patient p ON a.PatientID = p.PatientID ";
+		{			
 					if (!userId.equals("")) 
 					{
 						query+=filterDoctors;
-						query+=  "AND a.PatientID = '"+patientId+"' GROUP BY v.AppointmentID"; 
+						query+=  "AND a.PatientID = '"+patientId; 
 					}
 					else {
-						query+= "WHERE a.PatientID = '"+patientId+"' GROUP BY v.AppointmentID";
+						query+= "WHERE a.PatientID = '"+patientId+"' ";
 					}
 		}
 		else if (patientId.equals("-1") && !doctorId.equals("-1"))
 		{
-			query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
-					+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(v.DoctorComment,'') AS DoctorComment,"
-					+ " IFNULL(v.VisitReason,'') AS VisitReason, IFNULL(v.ProcedureFee,'') AS ProcedureFee, IFNULL(v.ProcedureName,'') AS ProcedureName, "
-					+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, a.AppointmentID, a.DoctorID FROM appointment a "
-					+ "LEFT JOIN visitationrecord v ON a.AppointmentID = v.AppointmentID "
-					+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID LEFT JOIN patient p ON a.PatientID = p.PatientID ";
-					if (!userId.equals("")){
+							if (!userId.equals("")){
 						query += filterDoctors;
-						query += "AND a.DoctorID = '"+doctorId+"' GROUP BY v.AppointmentID";
+						query += "AND a.DoctorID = '"+doctorId+"' ";
 					}
-					else query+= "WHERE a.DoctorID = '"+doctorId+"' GROUP BY v.AppointmentID"; 
+					else query+= "WHERE a.DoctorID = '"+doctorId+"'"; 
 		}
 		else if (doctorId.equals("-1") && patientId.equals("-1"))
 		{
-			query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
-		+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(v.DoctorComment,'') AS DoctorComment,"
-		+ " IFNULL(v.VisitReason,'') AS VisitReason, IFNULL(v.ProcedureFee,'') AS ProcedureFee, IFNULL(v.ProcedureName,'') AS ProcedureName, "
-		+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, a.AppointmentID, a.DoctorID FROM appointment a "
-		+ "LEFT JOIN visitationrecord v ON a.AppointmentID = v.AppointmentID "
-		+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID LEFT JOIN patient p ON a.PatientID = p.PatientID ";
-			if (!userId.equals("")) query+=filterDoctors + "GROUP BY v.AppointmentID";
-			else query +=" GROUP BY v.AppointmentID";
+			if (!userId.equals("")) query+=filterDoctors + "";
 		}
 		else {
-			query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor', "
-					+ "CONCAT(p.FirstName, ' ', p.LastName) AS 'Patient', IFNULL(v.DoctorComment,'') AS DoctorComment,"
-					+ " IFNULL(v.VisitReason,'') AS VisitReason, IFNULL(v.ProcedureFee,'') AS ProcedureFee, IFNULL(v.ProcedureName,'') AS ProcedureName, "
-					+ "MAX(IFNULL(v.EnteredDate,'')) AS EnteredDate, a.AppointmentID, a.DoctorID FROM appointment a "
-					+ "LEFT JOIN visitationrecord v ON a.AppointmentID = v.AppointmentID "
-					+ "LEFT JOIN doctor d ON a.DoctorID = d.DoctorID LEFT JOIN patient p ON a.PatientID = p.PatientID " ;
+
 			if (!userId.equals("")) 
-				query+=filterDoctors + "AND a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"'"+" GROUP BY v.AppointmentID";
-			else query+= "WHERE a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"' "+ " GROUP BY v.AppointmentID";
+				query+=filterDoctors + "AND a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"'"+" ";
+			else query+= "WHERE a.DoctorID = '"+doctorId+"' "+ "AND a.PatientID = '"+patientId+"' "+ " ";
 		}
 		query+=";";
 		System.out.println(query);
@@ -785,7 +772,7 @@ public class dbQuery {
 	public static void Visitation_UpdateAppointmentRecord(String apptLength,String apptId, String docId)
 	{
 		String query = "UPDATE appointment SET AppointmentLength = '"+apptLength+"' WHERE AppointmentID = '"+
-	apptId+"' AND DoctorID = '"+docId+"';";
+				apptId+"' AND DoctorID = '"+docId+"';";
 		
 		System.out.println(query);
 		dbQuery.ExecuteDatabaseQuery(query);
