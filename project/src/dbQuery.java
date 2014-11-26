@@ -694,12 +694,11 @@ public class dbQuery {
 				if (!doctorId.equals("-1")) query += doctorQ;
 			}
 	
-				query+=";";
 		}
 		if (type.equals("STAFF"))
 		{
 			filterDoctors = " WHERE a.patientID IN (SELECT DISTINCT(s.PatientId) FROM staffdoctoraccess s WHERE " + 
-						"s.PatientID IN (SELECT s2.AssignedToDoctorID FROM staffdoctoraccess s2 WHERE s2.StaffID = '"+userId+"')) ";
+						"s.AssignedToDoctorID IN (SELECT s2.AssignedToDoctorID FROM staffdoctoraccess s2 WHERE s2.StaffID = '"+userId+"')) ";
 			
 			if (from == "" && to == "")
 			{
@@ -719,7 +718,7 @@ public class dbQuery {
 				if (!doctorId.equals("-1")) query += doctorQ;
 			}
 	
-				query+=";";
+			
 		}
 		if (type.equals("ADMIN"))
 		{
@@ -739,7 +738,7 @@ public class dbQuery {
 				if (!doctorId.equals("-1")) query += doctorQ;
 			}
 	
-				query+=";";
+			
 		}
 		System.out.println(query);
 

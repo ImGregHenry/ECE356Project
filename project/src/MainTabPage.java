@@ -68,6 +68,7 @@ public class MainTabPage {
 			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
 			tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
 			tabbedPane.addTab("Schedule Appointment", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.STAFF, loginUser));
+			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
 		}
 		else if(loginUser.accessLevel == Login.LoginAccessLevel.FINANCE)
 		{
