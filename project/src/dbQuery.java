@@ -23,7 +23,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "Success100";
+			String connectionPassword = "password";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,

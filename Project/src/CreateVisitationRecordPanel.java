@@ -160,7 +160,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		lblPatientFilterName.setBounds(241, 51, 45, 14);
 		add(lblPatientFilterName);
 		
-		JLabel lblVisitReason = new JLabel("Visit Reason");
+		JLabel lblVisitReason = new JLabel("Diagnosis");
 		lblVisitReason.setBounds(793, 260, 143, 14);
 		add(lblVisitReason);
 		
@@ -188,7 +188,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 		txt_ApptLength.setColumns(10);
 
 		String col[] = new String[] { "Visitation Date", "Visitation Length", "Doctor", "Patient","Doctor's Comments", 
-				"Visit Reason", "Procedure Fee", "Procedure Name","Entered Date","Doctor ID","Appointment ID"};
+				"Diagnosis", "Procedure Fee", "Procedure Name","Entered Date","Doctor ID","Appointment ID"};
 
 		DefaultTableModel model = new DefaultTableModel(col, 0);
 		
