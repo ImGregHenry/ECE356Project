@@ -77,6 +77,8 @@ public class AppointmentPanel extends JPanel {
 	
 	private void Refresh()
 	{
+		isDoctorComboBoxLoaded = false;
+		
 		if(this.pageMode == AppointmentLoadMode.DOCTOR)
 		{
 			String doctorName = this.user.DoctorFirstName + " " + this.user.DoctorLastName; 
@@ -242,9 +244,6 @@ public class AppointmentPanel extends JPanel {
 		table_Appointments.getColumnModel().getColumn(4).setPreferredWidth(200);
 		table_Appointments.getColumnModel().getColumn(5).setPreferredWidth(200);
 		
-//		table_Appointments.getColumnModel().getColumn(6).setPreferredWidth(0);
-//		table_Appointments.getColumnModel().getColumn(6).setMaxWidth(0);
-//		table_Appointments.getColumnModel().getColumn(6).setMinWidth(0);
 		table_Appointments.removeColumn(table_Appointments.getColumnModel().getColumn(TABLE_CAN_DELETE_COLUMN_INDEX));
 		table_Appointments.removeColumn(table_Appointments.getColumnModel().getColumn(TABLE_APPOINTMENT_ID_COLUMN_INDEX));
 		
@@ -349,7 +348,7 @@ public class AppointmentPanel extends JPanel {
 	
 			final JLabel lblCancelApptMsg = new JLabel("");
 			lblCancelApptMsg.setFont(new Font("Calibri", Font.BOLD, 14));
-			lblCancelApptMsg.setBounds(688, 23, 180, 14);
+			lblCancelApptMsg.setBounds(688, 23, 300, 14);
 			add(lblCancelApptMsg);
 			
 			JLabel lblmins = new JLabel("(mins)");
@@ -374,8 +373,8 @@ public class AppointmentPanel extends JPanel {
 					
 					String startDateString = sdfDate.format(calendar_Appt.getDate());
 					String startTimeString = sdfTime.format(spinner_Time.getValue()) + ":00";
-					//int apptLength = (int) spinner_Length.getValue();
-					int apptLength = 1;	
+					int apptLength = (int) spinner_Length.getValue();
+					//int apptLength = 1;	
 					try {
 						// Calculate start date of appt by merging the date and time
 						String combinedDateTimeString = startDateString + " " + startTimeString; 
@@ -447,13 +446,13 @@ public class AppointmentPanel extends JPanel {
 						dbQuery.Staff_DeleteScheduledAppointment(appointmentID.toString());
 						//TODO: handle deleting appointments when they have a visitation record (don't delete)
 						
-						lblscheduleNewAppointment.setText("Successfully deleted appointment.");
+						lblCancelApptMsg.setText("Successfully deleted appointment.");
 						
 						PopulateAppointmentTable();
 					}
 					else
 					{
-						lblscheduleNewAppointment.setText("Error: Unable to delete this appointment.");
+						lblCancelApptMsg.setText("Error: Unable to delete this appointment.");
 						//TODO: error message, cannot delete because visitation record exists for this appointment
 					}
 				}
