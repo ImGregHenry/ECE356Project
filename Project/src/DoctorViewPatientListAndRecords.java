@@ -95,6 +95,7 @@ public class DoctorViewPatientListAndRecords extends JPanel {
 		//System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
 		
 		Object[] row = new Object[PATIENT_TABLE_COLUMN_COUNT];
+		int count = 0;
 		try {
 			while(rs.next())
 			{  
@@ -107,10 +108,12 @@ public class DoctorViewPatientListAndRecords extends JPanel {
 			    row[1] = rs.getObject("PatientID"); 	
 			    row[2] = rs.getObject("FirstName") + " " + rs.getObject("LastName");		
 			    row[3] = rs.getObject("LastVisitDate"); //dateFormat.format(
-			    
+			    System.out.println("ACCESS: " + rs.getString("HasAccess"));  
 				if(rs.getString("HasAccess").equals("yes") 
 						|| comboBox_AllPatients.getSelectedItem() == "All")
-					((DefaultTableModel) table_Patients.getModel()).insertRow(rs.getRow()-1, row);
+				{
+					((DefaultTableModel) table_Patients.getModel()).insertRow(count++, row);
+				}
 			}
 			
 			//System.out.println("Successfully loaded doctor appointment table!");
