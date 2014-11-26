@@ -97,7 +97,7 @@ public class PatientInfoForStaff extends JPanel {
 		txt_Address.setText(null);
 		txt_PhoneNumber.setText(null);
 		txt_LastVisitDate.setText(null);
-		
+		txt_LastVisitDate.setEnabled(false);
 		table_Patients.clearSelection();
 		PopulatePatientTable();
 	}
@@ -111,19 +111,21 @@ public class PatientInfoForStaff extends JPanel {
 			try {
 				while(rs.next()){
 
-				txt_PatientID.setText(rs.getObject("PatientID").toString());
-				txt_SIN.setText(rs.getString("SocialInsuranceNumber"));
-				txt_FirstName.setText(rs.getString("FirstName"));
-				txt_LastName.setText(rs.getString("LastName"));
-				txt_Address.setText(rs.getString("Address"));
-				txt_PhoneNumber.setText(rs.getString("PhoneNumber"));
-				txt_HealthCardNum.setText(rs.getString("HealthCardNumber"));
+					txt_PatientID.setText(rs.getObject("PatientID").toString());
+					txt_PatientID.setEnabled(false);
+					txt_SIN.setText(rs.getString("SocialInsuranceNumber"));
+					txt_FirstName.setText(rs.getString("FirstName"));
+					txt_LastName.setText(rs.getString("LastName"));
+					txt_Address.setText(rs.getString("Address"));
+					txt_PhoneNumber.setText(rs.getString("PhoneNumber"));
+					txt_HealthCardNum.setText(rs.getString("HealthCardNumber"));
 				}
 				ResultSet rs_date = dbQuery.Patient_GetLastVisitDate(patientID);
 
 				while(rs_date.next()){
 					
 				txt_LastVisitDate.setText(rs_date.getString("LastVisitDate"));
+				txt_LastVisitDate.setEnabled(false);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -236,8 +238,9 @@ public class PatientInfoForStaff extends JPanel {
 		
 		txt_PatientID = new JTextField();
 		txt_PatientID.setBounds(510, 72, 219, 20);
+		txt_PatientID.setEnabled(false);
 		this.add(txt_PatientID);
-		txt_PatientID.setColumns(10);
+		
 
 		JLabel lbl_PatientID = new JLabel("Patient Num:");
 		lbl_PatientID.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -297,6 +300,7 @@ public class PatientInfoForStaff extends JPanel {
 		txt_LastVisitDate = new JTextField();
 		txt_LastVisitDate.setColumns(10);
 		txt_LastVisitDate.setBounds(510, 284, 219, 20);
+		txt_LastVisitDate.setEnabled(false);
 		this.add(txt_LastVisitDate);
 
 		lbl_LastVisitDate = new JLabel("Last Visit Date");
@@ -343,6 +347,7 @@ public class PatientInfoForStaff extends JPanel {
 		chckbx_CreateNew = new JCheckBox("Create New");
 		chckbx_CreateNew.setBounds(400, 36, 128, 23);
 		chckbx_CreateNew.setSelected(true);
+		chckbx_CreateNew.setEnabled(false);
 		if (pageLoadMode == PatientLoadMode.STAFF) 
 		{
 			chckbx_CreateNew.addItemListener(new ItemListener() {
@@ -361,18 +366,20 @@ public class PatientInfoForStaff extends JPanel {
 						txt_LastVisitDate.setText(null);
 						
 						btnUpdate.setText("Create");
+						chckbx_CreateNew.setEnabled(false);
+						table_Patients.clearSelection();
 		            }
-					else
-					{
-						txt_PatientID.setEnabled(true);
-						dbQuery.Patient_UpdatePatientInformation(
-								txt_PatientID.getText(), txt_SIN.getText(),
-								txt_FirstName.getText(), txt_LastName.getText(),
-								txt_HealthCardNum.getText(), txt_Address.getText(),
-								txt_PhoneNumber.getText());
-
-						lbl_UpdateMessage.setText("Patient Update Successful.");
-					}
+//					else
+//					{
+//						txt_PatientID.setEnabled(true);
+//						dbQuery.Patient_UpdatePatientInformation(
+//								txt_PatientID.getText(), txt_SIN.getText(),
+//								txt_FirstName.getText(), txt_LastName.getText(),
+//								txt_HealthCardNum.getText(), txt_Address.getText(),
+//								txt_PhoneNumber.getText());
+//
+//						//lbl_UpdateMessage.setText("Patient Update Successful.");
+//					}
 				}
 			});
 		this.add(chckbx_CreateNew);
@@ -399,7 +406,7 @@ public class PatientInfoForStaff extends JPanel {
 			}
 		};
 		table_Patients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table_Patients.getColumnModel().getColumn(0).setPreferredWidth(110);
+		table_Patients.getColumnModel().getColumn(0).setPreferredWidth(200);
 		table_Patients.removeColumn(table_Patients.getColumnModel().getColumn(TABLE_PATIENT_ID_COLUMN_INDEX));
 		
 		table_Patients.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -410,6 +417,7 @@ public class PatientInfoForStaff extends JPanel {
 				if(table_Patients.getSelectedRow() != -1)
 				{
 					btnUpdate.setText("Update");
+					chckbx_CreateNew.setEnabled(true);
 					chckbx_CreateNew.setSelected(false);
 					String PatientID = (table_Patients.getModel().getValueAt(table_Patients.getSelectedRow(), TABLE_PATIENT_ID_COLUMN_INDEX).toString());
 					loadPatientInformation(PatientID);

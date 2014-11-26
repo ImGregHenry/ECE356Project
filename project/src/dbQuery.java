@@ -239,15 +239,15 @@ public class dbQuery {
 //				+ "WHERE d.DoctorID = '" + DoctorID + "' OR (a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NOT NULL)";
 		
 		String query = "SELECT z.FirstName, z.LastName, z.DoctorID "
-+ "FROM Doctor z "
-+ "WHERE DoctorID = '1' "
-+ "UNION "
-+ "SELECT d2.FirstName, d2.LastName, d2.DoctorID " 
-+ "FROM Doctor d  "
-+ "INNER JOIN StaffDoctorAccess a ON a.AssignedToDoctorID = d.DoctorID " 
-+ "INNER JOIN Doctor d2 ON a.DoctorIDSharingPatient = d2.DoctorID "
-+ "WHERE (a.AssignedToDoctorID = '1')";
-		
+			+ "FROM Doctor z "
+			+ "WHERE DoctorID = '" + DoctorID + "' "
+			+ "UNION "
+			+ "SELECT d2.FirstName, d2.LastName, d2.DoctorID " 
+			+ "FROM Doctor d  "
+			+ "INNER JOIN StaffDoctorAccess a ON a.AssignedToDoctorID = d.DoctorID " 
+			+ "INNER JOIN Doctor d2 ON a.DoctorIDSharingPatient = d2.DoctorID "
+			+ "WHERE (a.AssignedToDoctorID = '" + DoctorID + "')";
+					
 		System.out.println("************ QUERY: " + query);
 		ResultSet rs = dbQuery.GetResultSet(query);
 
