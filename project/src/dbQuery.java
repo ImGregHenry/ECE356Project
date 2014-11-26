@@ -871,7 +871,7 @@ public class dbQuery {
 		{
 			query += "AND vr.ProcedureName = '" + procedureName + "' ";
 		}
-		
+		query += "ORDER BY a.AppointmentDate ";
 					
 		ResultSet rs = dbQuery.GetResultSet(query);
 
