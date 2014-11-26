@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.Font;
 
 
 public class DoctorViewPatientListAndRecords extends JPanel {
@@ -370,6 +371,16 @@ public class DoctorViewPatientListAndRecords extends JPanel {
 		JLabel lblPatients = new JLabel("Patients");
 		lblPatients.setBounds(12, 54, 56, 16);
 		add(lblPatients);
+		
+		JLabel lblNewLabel = new JLabel("View All/Current Patients");
+		lblNewLabel.setFont(new Font("Calibri", Font.BOLD, 28));
+		lblNewLabel.setBounds(64, 13, 329, 23);
+		add(lblNewLabel);
+		
+		JLabel lblViewVisitationRecords = new JLabel("View Visitation Records For Patient");
+		lblViewVisitationRecords.setFont(new Font("Calibri", Font.BOLD, 28));
+		lblViewVisitationRecords.setBounds(849, 13, 488, 23);
+		add(lblViewVisitationRecords);
 
 	
 	}

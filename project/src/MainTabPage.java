@@ -62,16 +62,14 @@ public class MainTabPage {
 		
 		if (loginUser.accessLevel == Login.LoginAccessLevel.DOCTOR)
 		{
-			tabbedPane.addTab("View Patient List / Records", new DoctorViewPatientListAndRecords(loginUser));
+			tabbedPane.addTab("View My Appointments", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.DOCTOR, loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
+			tabbedPane.addTab("View Patient List / Records", new DoctorViewPatientListAndRecords(loginUser));
 			tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
 			tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));
 			tabbedPane.addTab("Assign Staff to Doctor", new AssignStaffToDoctor(loginUser));
-			tabbedPane.addTab("View My Appointments", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.DOCTOR, loginUser));
 			
 			lblWelcome.setText("Welcome: " + loginUser.DoctorFirstName + " " + loginUser.DoctorLastName);
-			
-			
 		}
 		else if ( loginUser.accessLevel == Login.LoginAccessLevel.PATIENT)
 		{
@@ -89,10 +87,11 @@ public class MainTabPage {
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.STAFF)
 		{
-			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
-			tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
 			tabbedPane.addTab("Schedule Appointment", new AppointmentPanel(AppointmentPanel.AppointmentLoadMode.STAFF, loginUser));
+			tabbedPane.addTab("Update/Create Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.STAFF, loginUser));
 			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
+			tabbedPane.addTab("Assign Patient to Doctor", new AssignPatientToDoctor(loginUser));
+			
 			
 			lblWelcome.setText("Welcome: " + loginUser.StaffFirstName + " " + loginUser.StaffLastName);
 		}

@@ -284,9 +284,20 @@ public class AppointmentPanel extends JPanel {
 	            }
 	        }
 	    });
-		comboBox_ApptTableDoctorSelect.setBounds(280, 20, 133, 20);
+		comboBox_ApptTableDoctorSelect.setBounds(703, 30, 133, 20);
 		this.add(comboBox_ApptTableDoctorSelect);
 		
+		JLabel lblDoctorsSchedule = new JLabel("Doctor's Schedule:");
+		lblDoctorsSchedule.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDoctorsSchedule.setBounds(539, 29, 133, 14);
+		this.add(lblDoctorsSchedule);
+		
+		JLabel lblViewAppointmentSchedule = new JLabel("View Upcoming Appointment Schedule");
+		if(this.pageMode == AppointmentLoadMode.STAFF)
+			lblViewAppointmentSchedule.setText("View Appointment Schedule");
+		lblViewAppointmentSchedule.setFont(new Font("Tahoma", Font.BOLD, 19));
+		lblViewAppointmentSchedule.setBounds(88, 28, 450, 31);
+		add(lblViewAppointmentSchedule);
 
 		///////////////////////////////////// HIDE ALL OF THESE FROM DOCTOR
 		if(this.pageMode != AppointmentLoadMode.DOCTOR)
@@ -303,12 +314,6 @@ public class AppointmentPanel extends JPanel {
 			comboBox_SchedulePatient = new JComboBox<CustomComboBoxItem>();
 			comboBox_SchedulePatient.setBounds(10, 644, 173, 36);
 			this.add(comboBox_SchedulePatient);
-			
-			
-			JLabel lblDoctorsSchedule = new JLabel("Doctor's Schedule:");
-			lblDoctorsSchedule.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblDoctorsSchedule.setBounds(116, 23, 133, 14);
-			this.add(lblDoctorsSchedule);
 			
 			
 			final JSpinner spinner_Time = new JSpinner( new SpinnerDateModel() );
@@ -348,7 +353,7 @@ public class AppointmentPanel extends JPanel {
 	
 			final JLabel lblCancelApptMsg = new JLabel("");
 			lblCancelApptMsg.setFont(new Font("Calibri", Font.BOLD, 14));
-			lblCancelApptMsg.setBounds(688, 23, 300, 14);
+			lblCancelApptMsg.setBounds(1090, 30, 300, 14);
 			add(lblCancelApptMsg);
 			
 			JLabel lblmins = new JLabel("(mins)");
@@ -457,7 +462,7 @@ public class AppointmentPanel extends JPanel {
 					}
 				}
 			});
-			btnCancelAppointment.setBounds(505, 19, 173, 23);
+			btnCancelAppointment.setBounds(900, 30, 173, 23);
 			this.add(btnCancelAppointment);
 		}
 	}
