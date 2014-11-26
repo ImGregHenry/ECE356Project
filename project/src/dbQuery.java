@@ -24,7 +24,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "Success100";
+			String connectionPassword = "password";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -669,81 +669,31 @@ public class dbQuery {
 	
 	public static ResultSet Visitation_getAppointments(String from, String to, String doctorId, String userId, String type)
 	{
-		String query ="";
+		String query ="SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
+				 "CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID FROM appointment a JOIN doctor d ON  a.DoctorID = d.DoctorID "
+				 + "JOIN patient p on  a.PatientID = p.PatientID ";
 		String doctorQ = " AND a.doctorID = '"+doctorId+"';";
-		String filterDoctors = "";
+		String filterDoctors = " WHERE a.patientID IN (SELECT DISTINCT(s.PatientId) FROM staffdoctoraccess s WHERE " + 
+				"s.AssignedToDoctorID IN (SELECT s2.AssignedToDoctorID FROM staffdoctoraccess s2 WHERE s2.StaffID = '"+userId+"')) ";
 		String filterPatients = " WHERE a.PatientID = '"+userId+"'";
-		String patientQ = " AND a.PatientID = '"+userId+"';";
+				
 		if (type.equals("PATIENT"))
 		{
-			if (from == "" && to == "")
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						 "CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID FROM appointment a JOIN doctor d ON  a.DoctorID = d.DoctorID "
-						 + "JOIN patient p on  a.PatientID = p.PatientID";
-				query += filterPatients;
-				if (!doctorId.equals("-1")) query += "AND a.doctorId = '" + doctorId+"'";
-			}
-			else
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						"CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID  FROM appointment a JOIN doctor d ON a.DoctorID = d.DoctorID "
-						+ "JOIN patient p ON a.patientId = p.PatientID " + filterPatients+ 
-						" AND AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";
-				
-				if (!doctorId.equals("-1")) query += doctorQ;
-			}
-	
+			query+=	filterPatients+ " AND AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";				
 		}
-		if (type.equals("STAFF"))
+		else if (type.equals("STAFF"))
 		{
-			filterDoctors = " WHERE a.patientID IN (SELECT DISTINCT(s.PatientId) FROM staffdoctoraccess s WHERE " + 
-						"s.AssignedToDoctorID IN (SELECT s2.AssignedToDoctorID FROM staffdoctoraccess s2 WHERE s2.StaffID = '"+userId+"')) ";
-			
-			if (from == "" && to == "")
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						 "CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID FROM appointment a JOIN doctor d ON  a.DoctorID = d.DoctorID "
-						 + "JOIN patient p on  a.PatientID = p.PatientID";
-				query += filterDoctors;
-				if (!doctorId.equals("-1")) query += "AND a.doctorId = '" + doctorId+"'";
-			}
-			else
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						"CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID  FROM appointment a JOIN doctor d ON a.DoctorID = d.DoctorID "
-						+ "JOIN patient p ON a.patientId = p.PatientID " + filterDoctors+ 
-						" AND AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";
-				
-				if (!doctorId.equals("-1")) query += doctorQ;
-			}
-	
-			
+			query+= filterDoctors + " AND AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";						
 		}
-		if (type.equals("ADMIN"))
+		else if (type.equals("ADMIN"))
 		{
-			if (from == "" && to == "")
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						 "CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID FROM appointment a JOIN doctor d ON  a.DoctorID = d.DoctorID "
-						 + "JOIN patient p on  a.PatientID = p.PatientID";
-				if (!doctorId.equals("-1")) query += "WHERE a.doctorId = '" + doctorId+"'";
-			}
-			else
-			{
-				query = "SELECT a.AppointmentDate, a.AppointmentLength, CONCAT(d.FirstName,' ',d.LastName) AS 'Doctor'," +
-						"CONCAT(p.FirstName,' ',p.LastName) AS 'Patient', a.doctorID  FROM appointment a JOIN doctor d ON a.DoctorID = d.DoctorID "
-						+ "JOIN patient p ON a.patientId = p.PatientID " + 
-						"WHERE AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";
-				if (!doctorId.equals("-1")) query += doctorQ;
-			}
-	
-			
+				query += "WHERE AppointmentDate BETWEEN '"+ from +"'  AND '"+ to +"'";
 		}
+		
+		if (!doctorId.equals("-1")) query += doctorQ;
 		System.out.println(query);
 
 		ResultSet rs = dbQuery.GetResultSet(query);
-		
 		
 		return rs;
 	}
@@ -780,7 +730,7 @@ public class dbQuery {
 		}
 		else if (patientId.equals("-1") && !doctorId.equals("-1"))
 		{
-							if (!userId.equals("")){
+					if (!userId.equals("")){
 						query += filterDoctors;
 						query += "AND a.DoctorID = '"+doctorId+"' ";
 					}
