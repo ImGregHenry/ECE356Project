@@ -88,7 +88,7 @@ public class Login {
 		frame.setTitle("356 Project");http://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprisehttp://downloads.myeclipseide.com/downloads/products/eworkbench/helios/enterprise
 		
 		txt_LoginName = new JTextField();
-		txt_LoginName.setText("admin");
+		txt_LoginName.setText("");
 		txt_LoginName.setBounds(181, 120, 201, 20);
 		frame.getContentPane().add(txt_LoginName);
 		txt_LoginName.setColumns(10);
@@ -141,7 +141,7 @@ public class Login {
 		
 		txt_Password = new JPasswordField();
 		txt_Password.setBounds(181, 161, 201, 20);
-		txt_Password.setText("pass");
+		txt_Password.setText("");
 		frame.getContentPane().add(txt_Password);
 		
 	}
