@@ -57,9 +57,9 @@ public class VisitationRecordPanel extends JPanel {
 		{
 			userId = login.PatientID;
 		}
-		else if (login.accessLevel == Login.LoginAccessLevel.DOCTOR)
+		else if (login.accessLevel == Login.LoginAccessLevel.STAFF)
 		{
-			userId = login.DoctorID;
+			userId = login.StaffID;
 		}
 		else if (login.accessLevel == Login.LoginAccessLevel.ADMIN)
 		{
@@ -85,9 +85,9 @@ public class VisitationRecordPanel extends JPanel {
 		//textField.setBounds(arg0, arg1, arg2, arg3);
 		String col[];
 		if (login.accessLevel != Login.LoginAccessLevel.PATIENT)
-			col = new String[] { "Visitation Date", "Doctor", "Patient", "Visit Reason", "Procedure Name", "Procedure Fee","Prescription","Entered Date","Doctor's Comments" };
+			col = new String[] { "Visitation Date", "Doctor", "Patient", "Diagnosis", "Procedure Name", "Procedure Fee","Prescription","Entered Date","Doctor's Comments" };
 		else 
-			col = new String[] { "Visitation Date", "Doctor", "Patient", "Visit Reason", "Procedure Name", "Procedure Fee", "Prescription","Entered Date" };
+			col = new String[] { "Visitation Date", "Doctor", "Patient", "Diagnosis", "Procedure Name", "Procedure Fee", "Prescription","Entered Date" };
 		String appointmentCol[] = new String[] {"Appointment Date", "Appointment Length", "Doctor", "Patient", "DoctorId"};
 		DefaultTableModel model = new DefaultTableModel(col, 0);
 		DefaultTableModel appModel = new DefaultTableModel(appointmentCol, 0);
@@ -264,8 +264,12 @@ public class VisitationRecordPanel extends JPanel {
 	private void PopulateDoctorDropDown()
 	{
 		try {
+			ResultSet rs;
+			if (login.accessLevel == Login.LoginAccessLevel.ADMIN)
+				rs = dbQuery.Staff_GetAllDoctorInfo();
+			else
+				rs = dbQuery.ViewVisitation_fillDoctorTable(userId, login.accessLevel.toString());	
 			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
 			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", "All"));			
 			while(rs.next())
 			{  

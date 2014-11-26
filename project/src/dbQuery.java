@@ -617,20 +617,15 @@ public class dbQuery {
 	// VisitationRecordPanel.java
 	// **************************
 
-	public ResultSet Doctor_GetFilteredVisitationRecordInfo(String patFirstName, String patLastName, String diagnosis, String prescrip, String procedure)
+	public static ResultSet ViewVisitation_fillDoctorTable(String userId, String type)
 	{
-		String query = "select *  "
-				+ "from appointment a "
-				+ "inner join visitationrecord vr on a.AppointmentID = vr.AppointmentID "
-				+ "INNER JOIN Patient p ON p.PatientID = a.PatientID "
-				+ "INNER JOIN Medical m ON m.ProcedureName = vr.ProcedureName "
-				+ "WHERE DoctorID = '1' "
-				+ "AND p.FirstName LIKE '%" + patFirstName + "%' "
-				+ "AND p.LastName LIKE '%" + patLastName + "%' "
-				+ "AND vr.VisitReason LIKE '%" + diagnosis + "%' "
-				+ "AND m.Prescription LIKE '%" + prescrip + "%' "
-				+ "AND vr.ProcedureName LIKE '%" + procedure+ "%'";
-		
+		String query ="";
+		if (type.equals("STAFF"))
+			query= "SELECT DISTINCT(s.AssignedToDoctorID) AS DoctorID, d.FirstName AS 'FirstName', d.LastName AS 'LastName' FROM staffdoctoraccess s "+ 
+				"JOIN doctor d ON d.doctorID = s.AssignedToDoctorID  WHERE s.StaffID = '"+userId+"';";
+		else
+			query= "SELECT DISTINCT(s.AssignedToDoctorID) AS DoctorID, d.FirstName AS 'FirstName', d.LastName AS 'LastName' FROM staffdoctoraccess s "+ 
+					"JOIN doctor d ON d.doctorID = s.AssignedToDoctorID  WHERE s.PatientID = '"+userId+"';";
 		ResultSet rs = dbQuery.GetResultSet(query);
 		
 		return rs;
@@ -665,11 +660,10 @@ public class dbQuery {
 	
 				query+=";";
 		}
-		if (type.equals("DOCTOR"))
+		if (type.equals("STAFF"))
 		{
-			filterDoctors = " WHERE a.patientID IN(Select PatientID from staffdoctoraccess WHERE PatientID IS NOT NULL "
-					+ "AND AssignedToDoctorID = '"+userId+"' OR DoctorIDSharingPatient = '"+userId+"' AND AssignedToDoctorID IS NOT NULL "
-					+ "AND DoctorIDSharingPatient IS NOT NULL) OR a.DoctorID = '"+userId+"'";
+			filterDoctors = " WHERE a.patientID IN (SELECT DISTINCT(s.PatientId) FROM staffdoctoraccess s WHERE " + 
+						"s.PatientID IN (SELECT s2.AssignedToDoctorID FROM staffdoctoraccess s2 WHERE s2.StaffID = '"+userId+"')) ";
 			
 			if (from == "" && to == "")
 			{
@@ -722,9 +716,10 @@ public class dbQuery {
 	public static ResultSet Visitation_getAllVisits(String doctorId, String patientId, String userId)
 	{
 		String query = "";
-		String filterDoctors = " WHERE a.patientID IN(Select PatientID from staffdoctoraccess WHERE PatientID IS NOT NULL "
-				+ "AND AssignedToDoctorID = '"+userId+"' OR DoctorIDSharingPatient = '"+userId+"' AND AssignedToDoctorID IS NOT NULL "
-				+ "AND DoctorIDSharingPatient IS NOT NULL) OR a.DoctorID = '"+userId+"' ";
+		String filterDoctors = " WHERE a.patientID IN(Select s.PatientID from staffdoctoraccess s WHERE s.PatientID IS NOT NULL "
+				+ "AND s.AssignedToDoctorID = '"+userId+"' AND s.AssignedToDoctorID IS NOT NULL "
+				+ " UNION ALL SELECT a.PatientID AS 'Patient'"
+					+ " FROM appointment a WHERE a.DoctorID = '"+userId+"') ";
 		
 		if (doctorId.equals("-1") && !patientId.equals("-1"))
 		{
@@ -808,7 +803,7 @@ public class dbQuery {
 	}
 	public static ResultSet Visitation_getProcedures()
 	{
-		String query = "SELECT m.ProcedureName, m.ProcedureFee FROM medical m;";
+		String query = "SELECT m.ProcedureName, m.ProcedureFee, m.Prescription FROM medical m;";
 				
 		ResultSet rs = dbQuery.GetResultSet(query);
 		

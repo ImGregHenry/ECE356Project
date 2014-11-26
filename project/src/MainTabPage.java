@@ -60,8 +60,8 @@ public class MainTabPage {
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.ADMIN)
 		{
-//			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
-//			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
+			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
+			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
 		}
 		else if (loginUser.accessLevel == Login.LoginAccessLevel.STAFF)
 		{

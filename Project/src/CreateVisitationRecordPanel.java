@@ -46,6 +46,7 @@ public class CreateVisitationRecordPanel extends JPanel {
 	String userId ="";
 	String entDate;
 	String doctorID;
+	User user;
 	String appID;
 	private JTextField txtPatient;
 	CustomComboBoxItem selectedPatient = new CustomComboBoxItem("-1","");
@@ -53,11 +54,12 @@ public class CreateVisitationRecordPanel extends JPanel {
 	private boolean populating = false;
 	public CreateVisitationRecordPanel(User login)
 	{
+		user = login;
 		if (login.accessLevel == Login.LoginAccessLevel.DOCTOR)
 		userId = login.DoctorID;
 		
 		comboBox_Procedures = new JComboBox<CustomComboBoxItem>();
-		comboBox_Procedures.setBounds(942, 292, 173, 36);
+		comboBox_Procedures.setBounds(793, 329, 269, 36);
 		this.add(comboBox_Procedures);
 		
 		comboBox_SchedulePatient = new JComboBox<CustomComboBoxItem>();
@@ -107,8 +109,13 @@ public class CreateVisitationRecordPanel extends JPanel {
 		
 		btnCreateupdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				CustomComboBoxItem procItem = ((CustomComboBoxItem) comboBox_Procedures.getSelectedItem());
+
 				if (txtApptDate.getText().equals("") || txtDoctorName.getText().equals("") || txtPatient.getText().equals(""))
 				{
+					
+					System.out.println(procItem.getName().substring(0,procItem.getName().indexOf(" ")));
+
 					JOptionPane.showMessageDialog(null,"Please select a record");			
 					return;
 				}
@@ -116,7 +123,6 @@ public class CreateVisitationRecordPanel extends JPanel {
 				System.out.println(txt_ApptLength.getText().equals(appLength));
 				System.out.println(txtVReason.getText().equals(vReason));
 				System.out.println(tfDocComm.getText().equals(dComments));
-				CustomComboBoxItem procItem = ((CustomComboBoxItem) comboBox_Procedures.getSelectedItem());
 				if (procItem.getID().equals("-1"))
 				{
 					JOptionPane.showMessageDialog(null,"Please select the procedure");
@@ -128,9 +134,11 @@ public class CreateVisitationRecordPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,"Please change the record");
 					return;
 				}
+				
+				
 				dbQuery.Visitation_UpdateAppointmentRecord(txt_ApptLength.getText(),appID,doctorID);
 				dbQuery.Visitation_InsertVisitationRecord(appID,tfDocComm.getText(),txtVReason.getText(),
-						procItem.getID(), procItem.getName());
+						procItem.getID(), procItem.getName().substring(0,procItem.getName().indexOf(" ")));
 				
 				appLength = txt_ApptLength.getText(); 
 				vReason = txtVReason.getText();
@@ -164,8 +172,8 @@ public class CreateVisitationRecordPanel extends JPanel {
 		lblVisitReason.setBounds(793, 260, 143, 14);
 		add(lblVisitReason);
 		
-		JLabel lblProcedureName = new JLabel("Procedure Name");
-		lblProcedureName.setBounds(793, 303, 143, 14);
+		JLabel lblProcedureName = new JLabel("Procedure - Prescription Name");
+		lblProcedureName.setBounds(793, 300, 269, 25);
 		add(lblProcedureName);
 		
 		JLabel lblDoctorsComment = new JLabel("Doctor's Comment");
@@ -353,8 +361,11 @@ public class CreateVisitationRecordPanel extends JPanel {
 	private void PopulateDoctorDropDown()
 	{
 		try {
+			ResultSet rs;
+
+			rs = dbQuery.Staff_GetAllDoctorInfo();
 			
-			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo();
+			
 			comboBox_ScheduleDoctor.addItem(new CustomComboBoxItem("-1", "All"));			
 			while(rs.next())
 			{  
@@ -379,7 +390,8 @@ public class CreateVisitationRecordPanel extends JPanel {
 			comboBox_Procedures.addItem(new CustomComboBoxItem("-1",""));
 			while(rs.next())
 			{
-				String procedureName = rs.getObject("ProcedureName").toString();
+				
+				String procedureName = rs.getObject("ProcedureName").toString() + " - "+rs.getObject("Prescription");
 				comboBox_Procedures.addItem(new CustomComboBoxItem(rs.getObject("ProcedureFee").toString(),procedureName));
 			}
 			System.out.println("Procedure List Loaded.");
