@@ -51,18 +51,17 @@ CREATE TABLE Patient (
 );
 
 
-INSERT INTO Patient (PatientID, NumberOfVisits, SocialInsuranceNumber, FirstName, LastName, 
-                   HealthCardNumber, Address, CurrentStatus, LastVisitDate)
-VALUES ('1', '2', '905455319', 'Spike', 'Jones', '4129375901AM', '180 Meadowlarke Drive', 'Alive', '2014-11-04'),
- ('2', '1', '922038418', 'Michael', 'Lowry', '8273046198EF', '321 Main Street', 'Deceased', '2014-10-03'),
- ('3', '5', '936648102', 'Fatima', 'Reyhani', '3841030394GS', '420 Low Street', 'Critical', '2014-01-12'),
- ('4', '3', '941670492', 'Alysha', 'Ahmed', '490283456GH', '100 Buckingham Palace', 'Alive', '2014-04-20'),
- ('5', '10', '830475192', 'Kevin', 'Persaud', '7203844057SJ', '1600 Pennsylvania Avenue', 'Recovery', '2014-08-29'),
- ('6', '4', '882939304', 'Lois', 'Wayne', '6139485720LG', '99 Intel Avenue', 'Discharged', '2014-03-31'),
- ('7', '23', '738920174', 'William', 'Danger', '2937401548SS', '1505 Spruce Circle', 'Critical', '2014-07-08'),
- ('8', '1', '876401923', 'Michael', 'Smith', '57483392034TD', '2385 Hickory Way', 'Alive', '2014-09-15'),
- ('9', '3', '823495664', 'Lucy', 'Wong', '2283049581FC', '84 Grimmauld Place', 'Deceased', '2014-04-01'),
- ('10', '12', '732948576', 'Peter', 'McAvon', '1920482995WE', '5 Sonic  Drive', 'Critical', '2014-11-25'),;
+INSERT INTO Patient (PatientID, NumberOfVisits, SocialInsuranceNumber, FirstName, LastName, PhoneNumber, HealthCardNumber, Address, CurrentStatus, LastVisitDate)
+VALUES ('1', '2', '905455319', 'Spike', 'Jones', '4169920374', '4129375901AM', '180 Meadowlarke Drive', 'Alive', '2014-11-04'),
+ ('2', '1', '922038418', 'Michael', 'Lowry', '2893049412', '8273046198EF', '321 Main Street', 'Deceased', '2014-10-03'),
+ ('3', '5', '936648102', 'Fatima', 'Reyhani', '9054553196', '3841030394GS', '420 Low Street', 'Critical', '2014-01-12'),
+ ('4', '3', '941670492', 'Alysha', 'Ahmed', '4165218649',  '490283456GH', '100 Buckingham Palace', 'Alive', '2014-04-20'),
+ ('5', '10', '830475192', 'Kevin', 'Persaud', '2895227977', '7203844057SJ', '1600 Pennsylvania Avenue', 'Recovery', '2014-08-29'),
+ ('6', '4', '882939304', 'Lois', 'Wayne', '9054563392', '6139485720LG', '99 Intel Avenue', 'Discharged', '2014-03-31'),
+ ('7', '23', '738920174', 'William', 'Danger', '6472349876', '2937401548SS', '1505 Spruce Circle', 'Critical', '2014-07-08'),
+ ('8', '1', '876401923', 'Michael', 'Smith', '6475679302', '57483392034TD', '2385 Hickory Way', 'Alive', '2014-09-15'),
+ ('9', '3', '823495664', 'Lucy', 'Wong', '4162899051', '2283049581FC', '84 Grimmauld Place', 'Deceased', '2014-04-01'),
+ ('10', '12', '732948576', 'Peter', 'McAvon', '9053101011', '1920482995WE', '5 Sonic  Drive', 'Critical', '2014-11-25');
 
 
 CREATE TABLE AccessLevels (
@@ -97,7 +96,7 @@ VALUES ('gthenry', 'pass', NULL, NULL, '1','DOCTOR'),
 ('s7jung', 'pass', NULL, NULL, '3','DOCTOR'),
 ('sseemaku', 'pass', NULL, NULL, '4','DOCTOR'),
 ('mgrey', 'pass', NULL, NULL, '5','DOCTOR'),
-('ghouse', 'pass', NULL, NULL, '6','DOCTOR')
+('ghouse', 'pass', NULL, NULL, '6','DOCTOR'),
 ('bloblaw', 'pass', '1', NULL, NULL, 'FINANCE'),
 ('vchau', 'pass', '2', NULL, NULL,'STAFF'),
 ('jheimer', 'pass', '3', NULL, NULL,'STAFF'),
@@ -211,7 +210,7 @@ VALUES  ('1', '2', '1', '2014-11-02 09:00:00', '04:20:00'),
 ('5', '6', '7', '2014-07-08 13:25:00', '01:20:00'),
 ('1', '2', '8', '2014-09-15 16:40:00', '02:00:00'),
 ('5', '6', '9', '2014-04-01 19:50:00', '00:45:00'),
-('6', '7', '10', '2014-11-25 11:10:00', '03:06:00'),;
+('6', '7', '10', '2014-11-25 11:10:00', '03:06:00');
 -- 'YYYY-MM-DD HH:MM:SS'
 -- 'HH:MM:SS'
 
