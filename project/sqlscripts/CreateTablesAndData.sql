@@ -133,6 +133,13 @@ VALUES  ('1', '1'),
 ('1', '3'),
 ('1', '2');
 
+INSERT INTO StaffDoctorAccess(AssignedToDoctorID, PatientID)
+VALUES  ('1', '1'),
+('2', '2'),
+('3', '3'),
+('1', '3'),
+('1', '2');
+
 CREATE TABLE Appointment (
 	AppointmentID int NOT NULL AUTO_INCREMENT,
     DoctorID VARCHAR(100) NOT NULL,

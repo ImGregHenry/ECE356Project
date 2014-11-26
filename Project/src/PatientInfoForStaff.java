@@ -60,12 +60,13 @@ public class PatientInfoForStaff extends JPanel {
 	private JTable table_Patients;
 	private boolean isDoctorComboBoxLoaded = false;
 	private JCheckBox chckbx_CreateNew;
-
+	private User user;
 	/**
 	 * Create the application.
 	 */
 	public PatientInfoForStaff(PatientLoadMode mode, User _user) {
 		this.pageLoadMode = mode;
+		this.user = _user;
 		initialize();
 		
 		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and StaffID: " + _user.StaffID);
@@ -170,6 +171,7 @@ public class PatientInfoForStaff extends JPanel {
 		
 		CustomComboBoxItem selectedDoctor = (CustomComboBoxItem)comboBox_Doctor.getSelectedItem();
 		
+//		System.out.println("POPULATION CONTROL: " + selectedDoctor + ". ID: " + selectedDoctor.getID());
 
 		ResultSet rs = dbQuery.GetPatientList(selectedDoctor.getID());
 
