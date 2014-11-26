@@ -349,8 +349,8 @@ public class dbQuery {
 		ExecuteDatabaseQuery(query);
 	}
 
-	public static ResultSet Staff_GetFutureAppointmentInformation(
-			String doctorID) {
+	public static ResultSet Staff_GetFutureAppointmentInformation(AppointmentPanel.AppointmentLoadMode mode, 
+			String doctorID, String staffID) {
 		String query = "SELECT CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName, "
 				+ "CONCAT(p.FirstName, ' ', p.LastName) AS PatientName,  "
 				+ "CONCAT(s.FirstName, ' ', s.LastName) AS StaffName, a.AppointmentDate, a.AppointmentLength, a.DoctorID, a.AppointmentID, "
@@ -362,16 +362,25 @@ public class dbQuery {
 				+ "LEFT JOIN VisitationRecord v ON v.AppointmentID = a.AppointmentID "
 				+ "WHERE a.AppointmentDate > current_date() ";
 
-		// Don't filter if "ALL" is selected
-		if (doctorID != "ALL") {
+		if(mode == AppointmentPanel.AppointmentLoadMode.DOCTOR)
+		{
 			query += "AND a.DoctorID = '" + doctorID + "' ";
+		}
+		else
+		{
+			// Don't filter if "ALL" is selected
+			if (doctorID != "ALL") {
+				query += "AND a.DoctorID = '" + doctorID + "' ";
+			}
+			query += " AND a.DoctorID IN (SELECT d.DoctorID "
+				+ "FROM Doctor d "
+				+ "INNER JOIN StaffDoctorAccess a ON a.AssignedToDoctorID = d.DoctorID "
+				+ "WHERE a.StaffID = '" + staffID + "' AND a.DoctorIDSharingPatient IS NULL) "; 
 		}
 
 		query += "ORDER BY a.AppointmentDate";
-
-		System.out.println("QUERY: " + query);
-
-		// System.out.println("Query: " + query);
+		
+		 System.out.println("APPT Query: " + query);
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
