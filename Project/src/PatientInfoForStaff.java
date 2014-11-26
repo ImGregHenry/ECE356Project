@@ -1,4 +1,5 @@
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -69,8 +70,6 @@ public class PatientInfoForStaff extends JPanel {
 		this.user = _user;
 		initialize();
 		
-		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and StaffID: " + _user.StaffID);
-		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and DoctorID: " + _user.DoctorID);
 		if(this.pageLoadMode == PatientLoadMode.STAFF)
 		{
 			PopulateDoctorDoctorDropDown(_user.StaffID);
@@ -81,11 +80,12 @@ public class PatientInfoForStaff extends JPanel {
 		}
 		
 		isDoctorComboBoxLoaded = true;
+		Refresh();
+	}
+	
+	private void Refresh()
+	{
 		PopulatePatientTable();
-		
-		// if(pageLoadMode == PatientLoadMode.UPDATE)
-		// loadPatientInformation(patientID);
-
 	}
 
 	private void loadPatientInformation(String patientID) {
@@ -173,7 +173,7 @@ public class PatientInfoForStaff extends JPanel {
 		
 //		System.out.println("POPULATION CONTROL: " + selectedDoctor + ". ID: " + selectedDoctor.getID());
 
-		ResultSet rs = dbQuery.GetPatientList(selectedDoctor.getID());
+		ResultSet rs = dbQuery.GetPatientList(this.pageLoadMode, this.user.StaffID, selectedDoctor.getID(), this.user.DoctorID);
 
 		Object[] row = new Object[TABLE_COLUMN_COUNT];
 		try {
@@ -208,6 +208,17 @@ public class PatientInfoForStaff extends JPanel {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
 
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btn_Refresh = new JButton("", refreshImage);
+		btn_Refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Refresh();
+			}
+		});	
+		btn_Refresh.setBounds(10, 11, 35, 35);
+		this.add(btn_Refresh);
+		
 		txt_PatientID = new JTextField();
 		txt_PatientID.setBounds(510, 72, 219, 20);
 		this.add(txt_PatientID);

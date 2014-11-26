@@ -54,7 +54,7 @@ public class AssignPatientToDoctor extends JPanel {
 		this.User = _user;
 		
 		Initialize();
-		lbl_WelcomeStaffMember.setText("Welcome Staff Member: " + this.User.DoctorFirstName + " " + this.User.DoctorLastName);
+		lbl_WelcomeStaffMember.setText("Welcome Staff Member: " + this.User.StaffFirstName + " " + this.User.StaffLastName);
 		
 		LoadPage();
 	}
@@ -89,7 +89,7 @@ public class AssignPatientToDoctor extends JPanel {
 	
 	private void PopulatePatientDoctorAssignmentTable()
 	{
-		ResultSet rs = dbQuery.Staff_GetPatientToDoctorAssignments();
+		ResultSet rs = dbQuery.Staff_GetPatientToDoctorAssignments(this.User.StaffID);
 		
 		ResetPatientDoctorAssignmentTable();
 		

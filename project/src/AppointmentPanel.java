@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,15 +19,20 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import javax.swing.JSpinner;
+
 import java.awt.Font;
+
 import javax.swing.JButton;
 
 import com.toedter.calendar.JCalendar;
+
 import javax.swing.ListSelectionModel;
 
 
@@ -65,11 +71,17 @@ public class AppointmentPanel extends JPanel {
 		this.pageMode = _mode;
 		initialize();
 
+		Refresh();
 		
+	}
+	
+	private void Refresh()
+	{
 		if(this.pageMode == AppointmentLoadMode.DOCTOR)
 		{
-			String doctorName = _user.DoctorFirstName + " " + _user.DoctorLastName; 
-			comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem(_user.DoctorID, doctorName));
+			String doctorName = this.user.DoctorFirstName + " " + this.user.DoctorLastName; 
+			if(comboBox_ApptTableDoctorSelect.getItemCount() == 0)
+				comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem(this.user.DoctorID, doctorName));
 			
 			System.out.println("APPOINTMENT PANEL LOADED.  DOCID: " + this.user.DoctorID);
 		}
@@ -84,9 +96,7 @@ public class AppointmentPanel extends JPanel {
 		
 		isDoctorComboBoxLoaded = true;	//NOTE: keep this flag set after PopulateDoctorDropDown() method, IMPORTANT!
 		PopulateAppointmentTable();
-		
 	}
-	
 	private void PopulatePatientDropDown()
 	{
 		try {
@@ -193,6 +203,17 @@ public class AppointmentPanel extends JPanel {
 		
 		this.setLayout(null);
 		
+
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btn_Refresh = new JButton("", refreshImage);
+		btn_Refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Refresh();
+			}
+		});	
+		btn_Refresh.setBounds(10, 11, 35, 35);
+		add(btn_Refresh);
 		
 		DefaultTableModel model = new DefaultTableModel(tableColumns, 0);
 		

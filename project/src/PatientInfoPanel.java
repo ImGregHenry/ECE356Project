@@ -1,4 +1,5 @@
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -42,34 +43,16 @@ public class PatientInfoPanel extends JPanel {
 	private JTextField txt_PhoneNumber;
 	private JLabel lbl_PhoneNumber;
 	private JLabel lbl_UpdateMessage;
-
-	// /**
-	// * Launch the application.
-	// */
-	// public static void main(String[] args) {
-	// EventQueue.invokeLater(new Runnable() {
-	// public void run() {
-	// try {
-	// Patient window = new Patient();
-	// window.frame.setVisible(true);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// });
-	// }
-
-	/**
-	 * Create the application.
-	 */
+	private User user;
+	
 	public PatientInfoPanel(PatientLoadMode mode, User _user) {
 		this.pageLoadMode = mode;
+		this.user = _user;
 		initialize();
 		
 		System.out.println("Loading Patient Info Panel in Mode: " + mode + " and PatientID: " + _user.PatientID);
 		
-		loadPatientInformation(_user.PatientID);
-		
+		Refresh();
 		// dbQuery.StartDBConnection();
 		//
 		// if(pageLoadMode == PatientLoadMode.UPDATE)
@@ -77,6 +60,11 @@ public class PatientInfoPanel extends JPanel {
 
 	}
 
+	private void Refresh()
+	{
+		loadPatientInformation(this.user.PatientID);
+	}
+	
 	private void loadPatientInformation(String patientID) {
 		ResultSet rs = dbQuery.Patient_GetPatientInformation(patientID);
 
@@ -118,7 +106,18 @@ public class PatientInfoPanel extends JPanel {
 		frame.setBounds(100, 100, 1155, 900);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
-
+		
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btn_Refresh = new JButton("", refreshImage);
+		btn_Refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Refresh();
+			}
+		});	
+		btn_Refresh.setBounds(10, 11, 35, 35);
+		this.add(btn_Refresh);
+		
 		txt_PatientID = new JTextField();
 		txt_PatientID.setEditable(false);
 		txt_PatientID.setBounds(120, 72, 219, 20);

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
+
 public class dbQuery {
 
 	private static Connection conn = null;
@@ -23,7 +24,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "password";
+			String connectionPassword = "Success100";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -176,12 +177,44 @@ public class dbQuery {
 		dbQuery.ExecuteDatabaseQuery(query);
 	}
 	
-	public static ResultSet GetPatientList(String DoctorID) {
-		String query = "SELECT p.FirstName, p.LastName, p.PatientID "
+	public static ResultSet GetPatientList(PatientInfoForStaff.PatientLoadMode mode, String staffID, String docID, String selfDocID) {
+		String query = "";
+		
+		if(mode == PatientInfoForStaff.PatientLoadMode.DOCTOR)
+		{
+			
+			
+			// Doctor, who is not you, shared with someone else
+			if(!docID.equals(selfDocID))
+			{
+				query = "SELECT p.FirstName, p.LastName, p.PatientID " 
 				+ "FROM Patient p "
 				+ "INNER JOIN StaffDoctorAccess a ON a.PatientID = p.PatientID "
-				+ "WHERE a.AssignedToDoctorID = '" + DoctorID + "' AND a.DoctorIDSharingPatient IS NULL";
-		
+				+ "WHERE a.AssignedToDoctorID = '" + selfDocID  + "' AND a.DoctorIDSharingPatient = '" + docID + "'";
+
+			}
+			// Doctor is yourself
+			else
+			{
+				query = "SELECT p.FirstName, p.LastName, p.PatientID " 
+						+ "FROM Patient p "
+						+ "INNER JOIN StaffDoctorAccess a ON a.PatientID = p.PatientID "
+						+ "WHERE a.AssignedToDoctorID = '" + docID + "' AND a.DoctorIDSharingPatient IS NULL";
+			}
+		}
+		// Staff mode
+		else
+		{
+			query = "select distinct sda2.PatientID, p.firstname, p.lastname " 
+				+ "from staffdoctoraccess sda "
+				+ "inner join staffdoctoraccess sda2 on sda.assignedtodoctorid = sda2.assignedtodoctorid "
+				+ "INNER JOIN patient p ON sda2.patientid = p.patientid "
+				+ "where sda.staffid = '" + staffID + "' "
+				+ "AND sda2.assignedtodoctorid = '" + docID + "' " 
+				+ "AND sda2.DoctorIDsharingPatient is null";
+		}
+
+		System.out.println("TRALALA QUERY: " + query);
 		ResultSet rs = dbQuery.GetResultSet(query);
 
 		return rs;
@@ -384,14 +417,17 @@ public class dbQuery {
 	// **************************
 	// AssignPatientToDoctor.java
 	// **************************
-	public static ResultSet Staff_GetPatientToDoctorAssignments()
+	public static ResultSet Staff_GetPatientToDoctorAssignments(String staffID)
 	{
-		String query = "SELECT sda.AssignedToDoctorID, sda.PatientID, CONCAT(p.FirstName, ' ', p.LastName) AS PatientName, "
-		+ "CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName "
-		+ "FROM staffdoctoraccess sda "
-		+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
-		+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
-		+ "ORDER BY DoctorName, PatientName";
+		String query = "select sda2.AssignedToDoctorID,  CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName, "
+			+ "CONCAT(p.FirstName, ' ', p.LastName) AS PatientName, p.PatientID "
+			+ "from staffdoctoraccess sda1 "
+			+ "inner join staffdoctoraccess sda2 on sda1.assignedtodoctorid = sda2.assignedtodoctorid "
+			+ "inner join patient p on sda2.patientid = p.patientid "
+			+ "inner join doctor d on sda2.AssignedToDoctorID = d.doctorid "
+			+ "where sda1.staffid = '" + staffID + "' "
+			+ "AND sda2.DoctorIDSharingPatient is null "
+			+ "and sda2.patientid is not null";
 
 		ResultSet rs = dbQuery.GetResultSet(query);
 
@@ -402,7 +438,7 @@ public class dbQuery {
 		String query = "SELECT d.FirstName, d.LastName, d.DoctorID "
 				+ "FROM staffdoctoraccess sda "
 				+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID " 
-				+ "WHERE StaffID = 1 "
+				+ "WHERE StaffID = '" + staffID + "' "
 				+ "AND PatientID IS NULL "
 				+ "AND DoctorIDSharingPatient IS NULL";
 
