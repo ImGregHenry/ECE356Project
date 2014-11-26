@@ -1,3 +1,4 @@
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -55,6 +56,17 @@ public class CreateVisitationRecordPanel extends JPanel {
 	private boolean populating = false;
 	public CreateVisitationRecordPanel(User login)
 	{
+		ImageIcon refreshImage = new ImageIcon(getClass().getResource("ref.png"));
+		
+		JButton btn_Refresh = new JButton("", refreshImage);
+		btn_Refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Refresh();
+			}
+		});	
+		btn_Refresh.setBounds(1050, 11, 35, 35);
+		this.add(btn_Refresh);
+		
 		user = login;
 		if (login.accessLevel == Login.LoginAccessLevel.DOCTOR)
 		userId = login.DoctorID;
