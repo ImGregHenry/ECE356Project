@@ -128,7 +128,7 @@ public class Login {
 		btn_Login.setBounds(222, 217, 89, 23);
 		frame.getContentPane().add(btn_Login);
 		
-		JLabel lblNewUser = new JLabel("New User");
+		JLabel lblNewUser = new JLabel("");
 		lblNewUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
