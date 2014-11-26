@@ -24,7 +24,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "Success100";
+			String connectionPassword = "password";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -827,7 +827,7 @@ public class dbQuery {
 						"v.ProcedureName, v.ProcedureFee, m.Prescription, v.EnteredDate, v.DoctorComment " +
 						"FROM visitationrecord v JOIN appointment a ON v.AppointmentID = a.AppointmentID " +
 						"JOIN doctor d ON a.DoctorID = d.DoctorID JOIN patient p ON a.PatientID = p.PatientID JOIN medical m ON v.ProcedureName = m.ProcedureName  WHERE " +
-						"v.AppointmentID = (SELECT a2.AppointmentID FROM appointment a2 WHERE a2.AppointmentDate = '"+ appointmentDate +"' AND a2.DoctorID = "+ doctorId +");";
+						"v.AppointmentID = (SELECT a2.AppointmentID FROM appointment a2 WHERE a2.AppointmentDate = '"+ appointmentDate +"' AND a2.DoctorID = "+ doctorId +") ORDER BY v.EnteredDate DESC;";
 
 		System.out.println(query);
 		ResultSet rs = dbQuery.GetResultSet(query);
