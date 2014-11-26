@@ -70,19 +70,21 @@ public class AppointmentPanel extends JPanel {
 		{
 			String doctorName = _user.DoctorFirstName + " " + _user.DoctorLastName; 
 			comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem(_user.DoctorID, doctorName));
+			
+			System.out.println("APPOINTMENT PANEL LOADED.  DOCID: " + this.user.DoctorID);
 		}
 		// Staff
 		else
 		{
 			PopulatePatientDropDown();
 			PopulateDoctorDropDown(this.user.StaffID);
+			
+			System.out.println("APPOINTMENT PANEL LOADED.  StaffID: " + this.user.StaffID);
 		}
 		
 		isDoctorComboBoxLoaded = true;	//NOTE: keep this flag set after PopulateDoctorDropDown() method, IMPORTANT!
 		PopulateAppointmentTable();
 		
-		//TODO: only load doctors that staff can schedule appointments for.
-		System.out.println("APPOINTMENT PANEL LOADED.  StaffID: " + this.user.StaffID);
 	}
 	
 	private void PopulatePatientDropDown()
@@ -148,7 +150,7 @@ public class AppointmentPanel extends JPanel {
 		ResultSet rs = dbQuery.Staff_GetFutureAppointmentInformation(selectedDoctor.getID());
 		
 		
-		//System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
+		System.out.println("Querying doctor appointment schedule for doctorID: " + selectedDoctor.getID() + "!");
 		
 		Object[] row = new Object[TABLE_COLUMN_COUNT];
 		try {

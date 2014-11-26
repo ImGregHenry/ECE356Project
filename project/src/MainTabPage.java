@@ -46,7 +46,7 @@ public class MainTabPage {
 		
 		if (loginUser.accessLevel == Login.LoginAccessLevel.DOCTOR)
 		{
-			tabbedPane.addTab("View Visitation Record", new VisitationRecordPanel(loginUser));
+			tabbedPane.addTab("View Patient List / Records", new DoctorViewPatientListAndRecords(loginUser));
 			tabbedPane.addTab("Create Visitation Record", new  CreateVisitationRecordPanel(loginUser));
 			tabbedPane.addTab("View Patient Info", new PatientInfoForStaff(PatientInfoForStaff.PatientLoadMode.DOCTOR, loginUser));
 			tabbedPane.addTab("Doctor To Doctor Patient Sharing", new DoctorToDoctorPatientSharing(loginUser));

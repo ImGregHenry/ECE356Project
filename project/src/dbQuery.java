@@ -23,7 +23,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "password";
+			String connectionPassword = "Success100";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -336,7 +336,7 @@ public class dbQuery {
 
 		query += "ORDER BY a.AppointmentDate";
 
-		//System.out.println("QUERY: " + query);
+		System.out.println("QUERY: " + query);
 
 		// System.out.println("Query: " + query);
 
@@ -865,5 +865,68 @@ public class dbQuery {
 
 		return rs;
 
+	}
+	
+	/////////////////////
+	// DoctorViewPatientListAndRecords.java
+	////////////////////
+	
+	public static ResultSet Doctor_GetFilteredVRList(boolean isArchivedRecordsAllowed, String patID, String diag, String comments, String proc, String prescription)
+	{
+		
+		String query = "SELECT a.AppointmentID, a.DoctorID, d.FirstName AS DoctorFirstName, d.LastName AS DoctorLastName, "
+			+ "vr.ProcedureName, vr.DoctorComment, vr.VisitReason AS Diagnosis, m.Prescription, a.AppointmentDate, vr.EnteredDate, m.ProcedureName ";
+		
+		if(isArchivedRecordsAllowed)
+		{
+			query += ", IF(vr.EnteredDate IN (select MAX(EnteredDate) FROM Appointment a INNER JOIN VisitationRecord vr ON vr.AppointmentID = a.AppointmentID "
+					+ "GROUP BY vr.AppointmentID), 'no', 'yes') AS isArchived ";
+		}
+		query += "FROM Appointment a "
+			+ "INNER JOIN VisitationRecord vr on vr.AppointmentID = a.AppointmentID "
+			+ "INNER JOIN Medical m ON m.ProcedureName = vr.ProcedureName "
+			+ "INNER JOIN Doctor d ON d.DoctorID = a.DoctorID "
+			+ "WHERE a.PatientID = '" + patID + "' "
+			+ "AND vr.VisitReason LIKE '%" + diag + "%' "
+			+ "AND vr.DoctorComment LIKE '%" + comments + "%' "
+			+ "AND m.ProcedureName LIKE '%" + proc + "%' "
+			+ "AND m.Prescription LIKE '%" + prescription + "%' ";
+		
+		if(!isArchivedRecordsAllowed)
+		{
+			query += "AND vr.EnteredDate IN "
+					+ "(select MAX(EnteredDate) "
+					+ "FROM Appointment a "
+					+ "INNER JOIN VisitationRecord vr ON vr.AppointmentID = a.AppointmentID "
+					+ "GROUP BY vr.AppointmentID) ";
+				 
+		}
+		query += "ORDER BY vr.EnteredDate DESC";
+		System.out.println("GETVRLIST QUERY :" + query);
+
+			
+		ResultSet rs = dbQuery.GetResultSet(query);
+		return rs;
+	}
+	
+	
+	public static ResultSet Doctor_GetPatientList(String docID, String firstName, String lastName, String patID, String startDate, String endDate)
+	{
+		//String query = "select p.FirstName, p.LastName, p.PatientID, (select MAX(EnteredDate) FROM VisitationRecord WHERE p.PatientID = '1') AS LastVisitDate, "
+			//+ "IF ((SELECT COUNT(*) FROM staffdoctoraccess sda WHERE sda.PatientID = '1' AND sda.AssignedToDoctorID = '1') > 0, 'yes', 'no') AS HasAccess "
+		String query = "select p.FirstName, p.LastName, p.PatientID, (select MAX(EnteredDate) FROM Appointment a INNER JOIN VisitationRecord vz ON a.AppointmentID = vz.AppointmentID WHERE p.PatientID = a.PatientID) AS LastVisitDate, "
+					+ "IF ((SELECT COUNT(*) FROM staffdoctoraccess sda WHERE sda.PatientID = p.PatientID AND sda.AssignedToDoctorID = '" + docID + "') > 0, 'yes', 'no') AS HasAccess "	
+					+ "from patient p "
+			+ "where 1=1 ";
+			if(patID != null && !patID.equals(""))
+				query += "AND p.PatientID = '" + patID + "' ";
+		
+			query += "AND p.FirstName LIKE '%" + firstName + "%' "
+			+ "AND p.LastName LIKE '%" + lastName + "%'";
+					
+		System.out.println("GETPATIENTLIST QUERY :" + query);
+		ResultSet rs = dbQuery.GetResultSet(query);
+		
+		return rs;
 	}
 }
