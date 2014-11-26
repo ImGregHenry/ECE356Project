@@ -101,7 +101,7 @@ public class AppointmentPanel extends JPanel {
 	{
 		try {
 			ResultSet rs = dbQuery.Staff_GetAllPatientInfo();
-			
+			comboBox_SchedulePatient.removeAllItems();
 			while(rs.next())
 			{  
 				String patientName = rs.getObject("FirstName") + " " + rs.getObject("LastName");
@@ -122,6 +122,8 @@ public class AppointmentPanel extends JPanel {
 			
 			ResultSet rs = dbQuery.Staff_GetAllDoctorInfo(staffID);
 			
+			comboBox_ApptTableDoctorSelect.removeAllItems();
+			comboBox_ScheduleDoctor.removeAllItems();
 			comboBox_ApptTableDoctorSelect.addItem(new CustomComboBoxItem("ALL", "ALL"));
 			
 			while(rs.next())

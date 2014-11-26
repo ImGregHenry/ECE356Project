@@ -24,7 +24,7 @@ public class dbQuery {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String connectionUrl = "jdbc:mysql://localhost:3306/356project";
 			String connectionUser = "root";
-			String connectionPassword = "password";
+			String connectionPassword = "Success100";
 
 			if (conn == null) {
 				conn = DriverManager.getConnection(connectionUrl,
@@ -581,7 +581,7 @@ public class dbQuery {
 				+ "FROM staffdoctoraccess sda "
 				+ "INNER JOIN Doctor d ON sda.AssignedToDoctorID = d.DoctorID "
 				+ "INNER JOIN Patient p ON sda.PatientID = p.PatientID " 
-				+ "WHERE sda.AssignedToDoctorID = '" + doctorID + "' "
+				+ "WHERE sda.AssignedToDoctorID = '" + doctorID + "' AND sda.DoctorIDSharingPatient IS NULL "
 				+ "ORDER BY PatientName";
 
 		ResultSet rs = dbQuery.GetResultSet(query);
@@ -596,8 +596,8 @@ public class dbQuery {
 		String query = "DELETE FROM StaffDoctorAccess "
 			 	+ "WHERE AssignedToDoctorID = '" + doctorIDAssignedTo + "' "
 			 	+ "AND DoctorIDSharingPatient = '" + doctorIDSharingPatient + "'"
-			 	+ "AND PatientID = '" + patientID + "' "
-				+ "AND PatientID IS NULL";
+			 	+ "AND PatientID = '" + patientID + "' ";
+		
 		//System.out.println("Delete DocToDoc Patient Sharing QUERY: " + query);
 		
 		dbQuery.ExecuteDatabaseQuery(query);

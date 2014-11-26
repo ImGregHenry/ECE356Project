@@ -70,21 +70,35 @@ public class PatientInfoForStaff extends JPanel {
 		this.user = _user;
 		initialize();
 		
-		if(this.pageLoadMode == PatientLoadMode.STAFF)
-		{
-			PopulateDoctorDoctorDropDown(_user.StaffID);
-		}
-		else if(this.pageLoadMode == PatientLoadMode.DOCTOR)
-		{
-			PopulateDoctorDoctorDropDown(_user.DoctorID);
-		}
-		
-		isDoctorComboBoxLoaded = true;
 		Refresh();
 	}
 	
 	private void Refresh()
 	{
+		isDoctorComboBoxLoaded = false;
+		
+		if(this.pageLoadMode == PatientLoadMode.STAFF)
+		{
+			PopulateDoctorDoctorDropDown(this.user.StaffID);
+		}
+		else if(this.pageLoadMode == PatientLoadMode.DOCTOR)
+		{
+			PopulateDoctorDoctorDropDown(this.user.DoctorID);
+		}
+		
+		isDoctorComboBoxLoaded = true;
+		
+		txt_PatientID.setText(null);
+		txt_PatientID.setEnabled(false);
+		txt_SIN.setText(null);
+		txt_FirstName.setText(null);
+		txt_LastName.setText(null);
+		txt_HealthCardNum.setText(null);
+		txt_Address.setText(null);
+		txt_PhoneNumber.setText(null);
+		txt_LastVisitDate.setText(null);
+		
+		table_Patients.clearSelection();
 		PopulatePatientTable();
 	}
 
@@ -138,6 +152,7 @@ public class PatientInfoForStaff extends JPanel {
 			else
 				return;
 			
+			comboBox_Doctor.removeAllItems();
 			
 			while(rs.next())
 			{  

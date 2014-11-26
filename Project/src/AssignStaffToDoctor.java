@@ -71,6 +71,8 @@ public class AssignStaffToDoctor extends JPanel {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				LoadPage();
+				lbl_AssignStaffToDocMessage.setText("");
+				lbl_DeleteStaffToDocAssignment.setText("");
 			}
 		});	
 		btnNewButton.setBounds(10, 11, 35, 35);
@@ -137,14 +139,22 @@ public class AssignStaffToDoctor extends JPanel {
 		JButton btnDeleteSelectedStaff = new JButton("Delete Selected Staff to Doctor Assignment");
 		btnDeleteSelectedStaff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String staffID = table_StaffToDoctorAssignments.getModel().getValueAt(table_StaffToDoctorAssignments.getSelectedRow(), TABLE_STAFFID_COLUMN_INDEX).toString();
-				String docID = table_StaffToDoctorAssignments.getModel().getValueAt(table_StaffToDoctorAssignments.getSelectedRow(), TABLE_DOCTORID_COLUMN_INDEX).toString();
-				
-				dbQuery.Doctor_DeleteStaffToDoctorAssignment(docID, staffID);
-				lbl_DeleteStaffToDocAssignment.setText("Successfully deleted staff to doctor assignment.");
-				lbl_AssignStaffToDocMessage.setText("");
-				
-				PopulateStaffDoctorAssignmentTable();
+
+				if(table_StaffToDoctorAssignments.getSelectedRow() != -1){
+					String staffID = table_StaffToDoctorAssignments.getModel().getValueAt(table_StaffToDoctorAssignments.getSelectedRow(), TABLE_STAFFID_COLUMN_INDEX).toString();
+					String docID = table_StaffToDoctorAssignments.getModel().getValueAt(table_StaffToDoctorAssignments.getSelectedRow(), TABLE_DOCTORID_COLUMN_INDEX).toString();
+					
+					dbQuery.Doctor_DeleteStaffToDoctorAssignment(docID, staffID);
+					lbl_DeleteStaffToDocAssignment.setText("Successfully deleted staff to doctor assignment.");
+					lbl_AssignStaffToDocMessage.setText("");
+					
+					PopulateStaffDoctorAssignmentTable();
+				}
+				else
+				{
+					lbl_AssignStaffToDocMessage.setText("");
+					lbl_DeleteStaffToDocAssignment.setText("Please select an assignment to delete.");	
+				}
 			}
 		});
 		btnDeleteSelectedStaff.setBounds(197, 267, 308, 23);

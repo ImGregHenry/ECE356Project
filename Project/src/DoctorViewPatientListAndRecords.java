@@ -138,7 +138,8 @@ public class DoctorViewPatientListAndRecords extends JPanel {
 
 		System.out.println("HERE2! - " + table_Patients.getSelectedRow());
 		
-		if(table_Patients.getSelectedRow() == -1)
+		if(table_Patients.getSelectedRow() == -1 
+				|| table_Patients.getValueAt(table_Patients.getSelectedRow(), 0).equals("no"))
 			return;
 			
 		System.out.println("HERE3!");

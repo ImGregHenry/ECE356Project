@@ -61,6 +61,7 @@ public class AssignPatientToDoctor extends JPanel {
 
 	private void LoadPage()
 	{
+		
 		PopulatePatientDropDown();
 		PopulateDoctorDropDown();
 		PopulatePatientDoctorAssignmentTable();
@@ -222,17 +223,19 @@ public class AssignPatientToDoctor extends JPanel {
 		JButton btnDeleteSelectedPatient = new JButton("Delete Selected Patient Assignment");
 		btnDeleteSelectedPatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				String patID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_PATIENTID_COLUMN_INDEX).toString();
-				String docID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_DOCTORID_COLUMN_INDEX).toString();
-						
-				dbQuery.Staff_DeletePatientToDoctorAssignment(patID, docID);
-				
-				lbl_DeletePatientToDocAssignment.setText("Successfully deleted assignment of patient to doctor.");
-				lbl_AssignPatientToDocMessage.setText("");
-				System.out.println("Successfully delete assignment of patientID '" + patID + "' to doctorID '" + docID + "'.");
-				
-				PopulatePatientDoctorAssignmentTable();
+				if(table_PatientToDoctorAssignments.getSelectedRow() != -1)
+				{
+					String patID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_PATIENTID_COLUMN_INDEX).toString();
+					String docID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_DOCTORID_COLUMN_INDEX).toString();
+							
+					dbQuery.Staff_DeletePatientToDoctorAssignment(patID, docID);
+					
+					lbl_DeletePatientToDocAssignment.setText("Successfully deleted assignment of patient to doctor.");
+					lbl_AssignPatientToDocMessage.setText("");
+					System.out.println("Successfully delete assignment of patientID '" + patID + "' to doctorID '" + docID + "'.");
+					
+					PopulatePatientDoctorAssignmentTable();
+				}
 			}
 		});
 		btnDeleteSelectedPatient.setBounds(197, 267, 308, 23);

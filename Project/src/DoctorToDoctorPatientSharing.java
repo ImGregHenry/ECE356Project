@@ -138,15 +138,18 @@ public class DoctorToDoctorPatientSharing extends JPanel {
 		JButton btnDeleteSelectedPatientSharing = new JButton("Delete Selected Patient Sharing");
 		btnDeleteSelectedPatientSharing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String patID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_PATIENTID_COLUMN_INDEX).toString();
-				String assignedDocID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_ASSIGNED_DOCTORID_COLUMN_INDEX).toString();
-				String sharingDocID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_SHARING_DOCTORID_COLUMN_INDEX).toString();
 				
-				dbQuery.Doctor_DeleteDoctorToDoctorPatientSharing(sharingDocID, patID, assignedDocID);
-				lbl_DeletePatientToDocSharing.setText("Successfully deleted staff to doctor assignment.");
-				lbl_AssignPatientToDocMessage.setText("");
-				
-				PopulateDoctorToDoctorPatientSharingTable();
+				if(table_PatientToDoctorAssignments.getSelectedRow() != -1){
+					String patID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_PATIENTID_COLUMN_INDEX).toString();
+					String assignedDocID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_ASSIGNED_DOCTORID_COLUMN_INDEX).toString();
+					String sharingDocID = table_PatientToDoctorAssignments.getModel().getValueAt(table_PatientToDoctorAssignments.getSelectedRow(), TABLE_SHARING_DOCTORID_COLUMN_INDEX).toString();
+					
+					dbQuery.Doctor_DeleteDoctorToDoctorPatientSharing(sharingDocID, patID, assignedDocID);
+					lbl_DeletePatientToDocSharing.setText("Successfully deleted staff to doctor assignment.");
+					lbl_AssignPatientToDocMessage.setText("");
+					
+					PopulateDoctorToDoctorPatientSharingTable();
+				}
 			}
 		});
 		btnDeleteSelectedPatientSharing.setBounds(197, 267, 308, 23);
